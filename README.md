@@ -213,7 +213,7 @@ Remember, PHP will be installed in the home directory.
     ; extension=mcrypt.so
 
     [php-fpm]
-    cgi.fix_pathinfo=1:
+    cgi.fix_pathinfo=0:
 
 You need to create a *php-fpm.conf* file to use Nginx.
 
@@ -285,9 +285,16 @@ Open *myphp7* and change the root directory to where your code is. Since, I'm us
 
     index indext.html index.htm index.php
 
+In the *location* section, add `/index.php?query_string` to the try_files section
+
+    try_files $uri $uri/ /index.php?query_string;
+
 In the FastCGI section, make the appropriate changes
 
     location ~ \.php$ {
+            # use for 0 day exploits
+            try_files $uri /index.php =404;
+            
             fastcgi_split_path_info ^(.+\.php)(/.+)$;
     #       # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
     #
