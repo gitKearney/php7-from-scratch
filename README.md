@@ -1,5 +1,5 @@
 # php7-from-scratch
-Instructions on how to compile PHP 7 from source on Ubuntu 14.04 machines. This
+Instructions on how to compile PHP 7 from source on Ubuntu 16.04 machines. This
 will also include instructions on how to configure the machine for Nginx.
 
 These instructions are ideal for those who want to run PHP in production.
@@ -8,20 +8,33 @@ These instructions are ideal for those who want to run PHP in production.
 
     sudo apt-get install \
     build-essential libssl-dev libcurl4-openssl-dev \
-    zlib1g-dev curl libxml2-dev libreadline-dev systemd mysql-server \
-    mysql-client bison dkms kpartx openssl pkg-config
+    zlib1g-dev curl libxml2-dev libreadline-dev systemd \
+    bison dkms kpartx openssl pkg-config
+    
+    # install MySQL
+    sudo apt-get install mysql-server mysql-client
+    
+    # install postgres 9.5
+    sudo apt-get install postgresql postgresql-contrib postgresql-server-dev-9.5
 
-## Download PHP 7.xx
-As of the time of this, PHP 7.03 was the latest PHP available. Download the
+apt-get install mysql-client mysql-server
+
+apt-get install postgresql postgresql-contrib postgresql-server-dev-9.5
+
+apt-get install nginx
+
+## Download PHP 7.0.11
+As of the time of this, PHP 7.0.11 was the latest PHP available. Download the
 tarball (I'll assume BZip) and extract it.
 
 __NOTE: this installs PHP in the user's local bin. In this example, the user is
 named me. Change this__
 
     cd /tmp;
-    wget http://us3.php.net/get/php-7.0.3.tar.bz2/from/this/mirror -O php-7.0.3.tar.bz2
-    tar xjf php-7.0.3.tar.bz2
-    cd php-7.0.3/
+    wget http://us3.php.net/get/php-7.0.11.tar.bz2/from/this/mirror -O php-7.0.11.tar.bz2
+    tar xjf php-7.0.11.tar.bz2
+    cd php-7.0.11/
+    mkdir -p /home/me/bin/php7
     cat >> build_php7.sh
     #!/bin/sh
 
@@ -45,7 +58,9 @@ named me. Change this__
     --with-pdo-mysql \
     --with-readline \
     --with-zlib \
-    --enable-pcntl
+    --enable-pcntl \
+    --with-readline \
+    --with-pgsql
 
     # press ctrl+c to exit out of cat
 
@@ -229,7 +244,7 @@ sockets
     user = www-data
     group = www-data
     ...
-    listen = /home/me/bin/php7/var/run/php-fpm.sock
+    listen = /var/run/php-fpm.sock
 
     ...
     ; Set permissions for unix socket, if one is used. In Linux, read/write
@@ -241,10 +256,6 @@ sockets
     listen.group = www-data
     listen.mode = 0660
 
-Now, create the directory for the FPM socket
-
-    mkdir -p /home/me/php7/var/run
-
 Assuming you'll be logged into your server not as root, add the PHP binary to
 your .bashrc profile
 
@@ -253,6 +264,19 @@ your .bashrc profile
         PATH="$HOME/bin:$PATH"
     fi
 
+
+Now, add PHP 7 binary to your path by:
+
+    cd /home/me/bin
+    ln -s php7/bin/php php
+    ln -s php7/bin/php-cgi php-cgi
+    ln -s php7/bin/php-config php-config
+    ln -s php7/bin/phpize phpize
+    ln -s php7/bin/phar.phar phar
+    ln -s php7/bin/pear pear
+    ln -s php7/bin/phpdbg phpdbg
+    ln -s php7/sbin/php-fpm php-fpm
+    
 ## WEBSERVERS
 
 __Laravel 5.2__
@@ -301,7 +325,7 @@ In the FastCGI section, make the appropriate changes
     #       # With php5-cgi alone:
     #       fastcgi_pass 127.0.0.1:9000;
     #       # With php5-fpm:
-            fastcgi_pass unix:/home/me/bin/php7/var/run/php-fpm.sock;
+            fastcgi_pass unix:/var/run/php-fpm.sock;
             fastcgi_index index.php;
             include fastcgi_params;
     }
