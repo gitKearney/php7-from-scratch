@@ -16,12 +16,9 @@ These instructions are ideal for those who want to run PHP in production.
     
     # install postgres 9.5
     sudo apt-get install postgresql postgresql-contrib postgresql-server-dev-9.5
-
-apt-get install mysql-client mysql-server
-
-apt-get install postgresql postgresql-contrib postgresql-server-dev-9.5
-
-apt-get install nginx
+    
+    # install nginx
+    apt-get install nginx
 
 ## Download PHP 7.0.11
 As of the time of this, PHP 7.0.11 was the latest PHP available. Download the
