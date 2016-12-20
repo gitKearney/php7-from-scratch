@@ -142,6 +142,11 @@ Now, add PHP 7 binary to your path by:
     ln -s php7.1/bin/phpdbg phpdbg
     ln -s php7.1/sbin/php-fpm php-fpm
     
+### Start PHP-FPM
+You'll have to start *php-fpm* manually to get it working with NginX
+
+    sudo ~/bin/php7.1/sbin/php-fpm
+
 ## WEBSERVERS
 
 __Laravel 5.2__
