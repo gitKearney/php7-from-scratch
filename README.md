@@ -1,5 +1,5 @@
 # php7-from-scratch
-Instructions on how to compile PHP 7 from source on Ubuntu 16.04 machines. This
+Instructions on how to compile PHP 7.1 from source on Ubuntu 16.04 machines. This
 will also include instructions on how to configure the machine for Nginx.
 
 These instructions are ideal for those who want to run PHP in production.
@@ -20,50 +20,51 @@ These instructions are ideal for those who want to run PHP in production.
     # install nginx
     apt-get install nginx
 
-## Download PHP 7.0.11
-As of the time of this, PHP 7.0.11 was the latest PHP available. Download the
+## Download PHP 7.1.0
+As of the time of this, PHP 7.1.0 was the latest PHP available. Download the
 tarball (I'll assume BZip) and extract it.
 
 __NOTE: this installs PHP in the user's local bin. In this example, the user is
 named me. Change this__
 
     cd /tmp;
-    wget http://us3.php.net/get/php-7.0.11.tar.bz2/from/this/mirror -O php-7.0.11.tar.bz2
-    tar xjf php-7.0.11.tar.bz2
-    cd php-7.0.11/
-    mkdir -p /home/me/bin/php7
-    cat >> build_php7.sh
+    wget http://us3.php.net/get/php-7.1.0.tar.bz2/from/this/mirror -O php-7.1.0.tar.bz2
+    tar xjf php-7.1.0.tar.bz2
+    cd php-7.1.0/
+    mkdir -p /home/me/bin/php7.1
+    cat >> build_php7.1.sh
     #!/bin/sh
 
-    ./configure --prefix=/home/me/bin/php7 \
-    --enable-bcmath \
-    --enable-fpm \
-    --enable-ftp \
-    --enable-mbstring \
-    --enable-mysqlnd \
-    --enable-shmop \
-    --enable-sockets \
-    --enable-sysvmsg \
-    --enable-sysvsem \
-    --enable-sysvshm \
-    --enable-zip \
-    --with-curl \
-    --with-mysqli \
-    --with-mysql-sock=/var/run/mysqlnd \
-    --with-pear \
-    --with-openssl \
-    --with-pdo-mysql \
-    --with-readline \
-    --with-zlib \
-    --enable-pcntl \
-    --with-readline \
-    --with-pgsql
+    ./configure --prefix=/home/me/bin/php7.1 \
+        --enable-bcmath \
+        --enable-fpm \
+        --enable-ftp \
+        --enable-mbstring \
+        --enable-mysqlnd \
+        --enable-shmop \
+        --enable-sockets \
+        --enable-sysvmsg \
+        --enable-sysvsem \
+        --enable-sysvshm \
+        --enable-zip \
+        --with-curl \
+        --with-mysqli \
+        --with-mysql-sock=/var/run/mysqlnd \
+        --with-pear \
+        --with-openssl \
+        --with-pdo-mysql \
+        --with-readline \
+        --with-zlib \
+        --enable-pcntl \
+        --with-readline \
+        --with-pgsql
 
     # press ctrl+c to exit out of cat
 
 #### compile and install
 Remember, PHP will be installed in the home directory.
 
+    sh build_php7.1.sh
     make
     make install
 
