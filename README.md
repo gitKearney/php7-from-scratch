@@ -68,170 +68,37 @@ Remember, PHP will be installed in the home directory.
     make
     make install
 
-#### You're PHP.ini
+#### Edit the PHP.ini file
+Copy the *php-7.1.0/php.ini-development* file from the source directory to the *~/bin/php7.1/lib/* directory, and rename
+the file to *php.ini*
 
-    cat >> ~/bin/php7/lib/php.ini
+    cp /tmp/php-7.1.0/php.ini-development ~/bin/php7.1/lib/php.ini
+
+You'll need to change a few settings
+
+Change your timezone
 
     [Date]
     ; Defines the default timezone used by the date functions
     ; http://php.net/date.timezone
     date.timezone = America/Chicago
-
-    [Pdo_mysql]
-    ; If mysqlnd is used: Number of cache slots for the internal result set cache
-    ; http://php.net/pdo_mysql.cache_size
-    pdo_mysql.cache_size = 2000
+    
+The MySQL socket PDO connects to
 
     ; Default socket name for local MySQL connects.  If empty, uses the built-in
     ; MySQL defaults.
     ; http://php.net/pdo_mysql.default-socket
     pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock
 
-    [MySQL]
-    ; Allow accessing, from PHP's perspective, local files with LOAD DATA statements
-    ; http://php.net/mysql.allow_local_infile
-    mysql.allow_local_infile = On
-
-    ; Allow or prevent persistent links.
-    ; http://php.net/mysql.allow-persistent
-    mysql.allow_persistent = On
-
-    ; If mysqlnd is used: Number of cache slots for the internal result set cache
-    ; http://php.net/mysql.cache_size
-    mysql.cache_size = 2000
-    ; Maximum number of persistent links.  -1 means no limit.
-    ; http://php.net/mysql.max-persistent
-    mysql.max_persistent = -1
-
-    ; Maximum number of links (persistent + non-persistent).  -1 means no limit.
-    ; http://php.net/mysql.max-links
-    mysql.max_links = -1
-
-    ; Default port number for mysql_connect().  If unset, mysql_connect() will use
-    ; the $MYSQL_TCP_PORT or the mysql-tcp entry in /etc/services or the
-    ; compile-time value defined MYSQL_PORT (in that order).  Win32 will only look
-    ; at MYSQL_PORT.
-    ; http://php.net/mysql.default-port
-    mysql.default_port =3306
-
-    ; Default socket name for local MySQL connects.  If empty, uses the built-in
-    ; MySQL defaults.
-    ; http://php.net/mysql.default-socket
-    mysql.default_socket=/var/run/mysqld/mysqld.sock
-
-    ; Default host for mysql_connect() (doesn't apply in safe mode).
-    ; http://php.net/mysql.default-host
-    mysql.default_host =
-
-    ; Default user for mysql_connect() (doesn't apply in safe mode).
-    ; http://php.net/mysql.default-user
-    mysql.default_user =
-
-    ; Default password for mysql_connect() (doesn't apply in safe mode).
-    ; Note that this is generally a *bad* idea to store passwords in this file.
-    ; *Any* user with PHP access can run 'echo get_cfg_var("mysql.default_password")
-    ; and reveal this password!  And of course, any users with read access to this
-    ; file will be able to reveal the password as well.
-    ; http://php.net/mysql.default-password
-    mysql.default_password =
-
-    ; Maximum time (in seconds) for connect timeout. -1 means no limit
-    ; http://php.net/mysql.connect-timeout
-    mysql.connect_timeout = 60
-
-    ; Trace mode. When trace_mode is active (=On), warnings for table/index scans and
-    ; SQL-Errors will be displayed.
-    ; http://php.net/mysql.trace-mode
-    mysql.trace_mode = Off
-
-    [MySQLi]
-
-    ; Maximum number of persistent links.  -1 means no limit.
-    ; http://php.net/mysqli.max-persistent
-    mysqli.max_persistent = -1
-
-    ; Allow accessing, from PHP's perspective, local files with LOAD DATA statements
-    ; http://php.net/mysqli.allow_local_infile
-    ;mysqli.allow_local_infile = On
-
-    ; Allow or prevent persistent links.
-    ; http://php.net/mysqli.allow-persistent
-    mysqli.allow_persistent = On
-
-    ; Maximum number of links.  -1 means no limit.
-    ; http://php.net/mysqli.max-links
-    mysqli.max_links = -1
-
-    ; If mysqlnd is used: Number of cache slots for the internal result set cache
-    ; http://php.net/mysqli.cache_size
-    mysqli.cache_size = 2000
-
-    ; Default port number for mysqli_connect().  If unset, mysqli_connect() will use
-    ; the $MYSQL_TCP_PORT or the mysql-tcp entry in /etc/services or the
-    ; compile-time value defined MYSQL_PORT (in that order).  Win32 will only look
-    ; at MYSQL_PORT.
-    ; http://php.net/mysqli.default-port
-    mysqli.default_port = 3306
-
-    ; Default socket name for local MySQL connects.  If empty, uses the built-in
-    ; MySQL defaults.
-    ; http://php.net/mysqli.default-socket
-    mysqli.default_socket=/var/run/mysqld/mysqld.sock
-
-    ; Default host for mysql_connect() (doesn't apply in safe mode).
-    ; http://php.net/mysqli.default-host
-    mysqli.default_host =
-
-    ; Default user for mysql_connect() (doesn't apply in safe mode).
-    ; http://php.net/mysqli.default-user
-    mysqli.default_user =
-
-    ; Default password for mysqli_connect() (doesn't apply in safe mode).
-    ; Note that this is generally a *bad* idea to store passwords in this file.
-    ; *Any* user with PHP access can run 'echo get_cfg_var("mysqli.default_pw")
-    ; file will be able to reveal the password as well.
-    ; http://php.net/mysqli.default-pw
-    mysqli.default_pw =
-
-    ; Allow or prevent reconnect
-    mysqli.reconnect = Off
-
-    [mysqlnd]
-    ; Enable / Disable collection of general statistics by mysqlnd which can be
-    ; used to tune and monitor MySQL operations.
-    ; http://php.net/mysqlnd.collect_statistics
-    mysqlnd.collect_statistics = On
-
-    ; Enable / Disable collection of memory usage statistics by mysqlnd which can be
-    ; used to tune and monitor MySQL operations.
-    ; http://php.net/mysqlnd.collect_memory_statistics
-    mysqlnd.collect_memory_statistics = Off
-
-    ; Size of a pre-allocated buffer used when sending commands to MySQL in bytes.
-    ; http://php.net/mysqlnd.net_cmd_buffer_size
-    ;mysqlnd.net_cmd_buffer_size = 2048
-
-    ; Size of a pre-allocated buffer used for reading data sent by the server in
-    ; bytes.
-    ; http://php.net/mysqlnd.net_read_buffer_size
-    ;mysqlnd.net_read_buffer_size = 32768
-
-    [bcmath]
-    ; Number of decimal digits for all bcmath functions.
-    ; http://php.net/bcmath.scale
-    bcmath.scale = 0
-
-    [mcrypt]
-    ; not needed since PHP has mcrypt compiled into it
-    ; extension=mcrypt.so
+PHP-FPM fix (You will most likely have to add this to the file)
 
     [php-fpm]
     cgi.fix_pathinfo=0:
 
 You need to create a *php-fpm.conf* file to use Nginx.
 
-    cd /home/me/bin/php7/etc/; cp php-fpm.conf.default php-fpm.conf
-    cd /home/me/bin/php7/etc/php-fpm.d/; cp www.conf.default www.conf
+    cd /home/me/bin/php7.1/etc/; cp php-fpm.conf.default php-fpm.conf
+    cd /home/me/bin/php7.1/etc/php-fpm.d/; cp www.conf.default www.conf
 
 In your favorite editor, open the www.conf file, and change the user and group
 from nobody to www-data (the user for nginx), and change the listen port to use
@@ -266,14 +133,14 @@ your .bashrc profile
 Now, add PHP 7 binary to your path by:
 
     cd /home/me/bin
-    ln -s php7/bin/php php
-    ln -s php7/bin/php-cgi php-cgi
-    ln -s php7/bin/php-config php-config
-    ln -s php7/bin/phpize phpize
-    ln -s php7/bin/phar.phar phar
-    ln -s php7/bin/pear pear
-    ln -s php7/bin/phpdbg phpdbg
-    ln -s php7/sbin/php-fpm php-fpm
+    ln -s php7.1/bin/php php
+    ln -s php7.1/bin/php-cgi php-cgi
+    ln -s php7.1/bin/php-config php-config
+    ln -s php7.1/bin/phpize phpize
+    ln -s php7.1/bin/phar.phar phar
+    ln -s php7.1/bin/pear pear
+    ln -s php7.1/bin/phpdbg phpdbg
+    ln -s php7.1/sbin/php-fpm php-fpm
     
 ## WEBSERVERS
 
