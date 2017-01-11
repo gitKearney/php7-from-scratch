@@ -208,3 +208,9 @@ Change to the sites-enabled directory, remove the default site, and make a link 
     sudo nginx -s reload
 
 Nginx should now be serving your files
+
+#### Nginx Virtualbox Bug
+You'll need to edit `/etc/nginx/nginx.conf` and change the line `sendfile on;` to `sendfile off;`
+
+What will happen is changes to static files (CSS and Javascript) files won't be updated. Turning off _sendfile_ will cause Nginx to serve the file via a different method and the new file's changes will be displayed immediately
+
