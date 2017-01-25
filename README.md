@@ -20,8 +20,8 @@ These instructions are ideal for those who want to run PHP in production.
     # install nginx
     apt-get install nginx
 
-## Download PHP 7.1.0
-As of the time of this, PHP 7.1.0 was the latest PHP available. Download the
+## Download Latest PHP 7.1.1
+As of the time of this, PHP 7.1.1 was the latest PHP available. Download the
 tarball (I'll assume BZip) and extract it.
 
 __NOTE: this installs PHP in the user's local bin. In this example, the user is
