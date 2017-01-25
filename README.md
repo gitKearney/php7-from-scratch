@@ -28,14 +28,14 @@ __NOTE: this installs PHP in the user's local bin. In this example, the user is
 named me. Change this__
 
     cd /tmp;
-    wget http://us3.php.net/get/php-7.1.0.tar.bz2/from/this/mirror -O php-7.1.0.tar.bz2
-    tar xjf php-7.1.0.tar.bz2
-    cd php-7.1.0/
-    mkdir -p /home/me/bin/php7.1
-    cat >> build_php7.1.sh
+    wget http://php.net/get/php-7.1.1.tar.bz2/from/this/mirror -O php-7.1.1.tar.bz2
+    tar xf php-7.1.1.tar.bz2
+    cd php-7.1.1
+    mkdir -p /home/me/bin/php7
+    cat >> build_php.sh
     #!/bin/sh
 
-    ./configure --prefix=/home/me/bin/php7.1 \
+    ./configure --prefix=/home/me/bin/php7 \
         --enable-bcmath \
         --enable-fpm \
         --enable-ftp \
@@ -64,15 +64,15 @@ named me. Change this__
 #### compile and install
 Remember, PHP will be installed in the home directory.
 
-    sh build_php7.1.sh
+    sh build_php.sh
     make
     make install
 
 #### Edit the PHP.ini file
-Copy the *php-7.1.0/php.ini-development* file from the source directory to the *~/bin/php7.1/lib/* directory, and rename
+Copy the *php-7.1.1/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
 the file to *php.ini*
 
-    cp /tmp/php-7.1.0/php.ini-development ~/bin/php7.1/lib/php.ini
+    cp /tmp/php-7.1.1/php.ini-development ~/bin/php7/lib/php.ini
 
 You'll need to change a few settings
 
@@ -133,19 +133,19 @@ your .bashrc profile
 Now, add PHP 7 binary to your path by:
 
     cd /home/me/bin
-    ln -s php7.1/bin/php php
-    ln -s php7.1/bin/php-cgi php-cgi
-    ln -s php7.1/bin/php-config php-config
-    ln -s php7.1/bin/phpize phpize
-    ln -s php7.1/bin/phar.phar phar
-    ln -s php7.1/bin/pear pear
-    ln -s php7.1/bin/phpdbg phpdbg
-    ln -s php7.1/sbin/php-fpm php-fpm
+    ln -s php7/bin/php php
+    ln -s php7/bin/php-cgi php-cgi
+    ln -s php7/bin/php-config php-config
+    ln -s php7/bin/phpize phpize
+    ln -s php7/bin/phar.phar phar
+    ln -s php7/bin/pear pear
+    ln -s php7/bin/phpdbg phpdbg
+    ln -s php7/sbin/php-fpm php-fpm
     
 ### Start PHP-FPM
 You'll have to start *php-fpm* manually to get it working with NginX
 
-    sudo ~/bin/php7.1/sbin/php-fpm
+    sudo ~/bin/php7/sbin/php-fpm
 
 ## WEBSERVERS
 
@@ -190,11 +190,7 @@ In the FastCGI section, make the appropriate changes
             try_files $uri /index.php =404;
             
             fastcgi_split_path_info ^(.+\.php)(/.+)$;
-    #       # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
-    #
-    #       # With php5-cgi alone:
-    #       fastcgi_pass 127.0.0.1:9000;
-    #       # With php5-fpm:
+            # With php-fpm:
             fastcgi_pass unix:/var/run/php-fpm.sock;
             fastcgi_index index.php;
             include fastcgi_params;
