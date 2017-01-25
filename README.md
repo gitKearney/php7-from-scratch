@@ -97,8 +97,8 @@ PHP-FPM fix (You will most likely have to add this to the file)
 
 You need to create a *php-fpm.conf* file to use Nginx.
 
-    cd /home/me/bin/php7.1/etc/; cp php-fpm.conf.default php-fpm.conf
-    cd /home/me/bin/php7.1/etc/php-fpm.d/; cp www.conf.default www.conf
+    cd /home/me/bin/php7/etc/; cp php-fpm.conf.default php-fpm.conf
+    cd /home/me/bin/php7/etc/php-fpm.d/; cp www.conf.default www.conf
 
 In your favorite editor, open the www.conf file, and change the user and group
 from nobody to www-data (the user for nginx), and change the listen port to use
