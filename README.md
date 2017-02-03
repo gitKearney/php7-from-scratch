@@ -189,11 +189,10 @@ In the FastCGI section, make the appropriate changes
             # use for 0 day exploits
             try_files $uri /index.php =404;
             
-            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            include snippets/fastcgi-php.conf;
+            
             # With php-fpm:
             fastcgi_pass unix:/var/run/php-fpm.sock;
-            fastcgi_index index.php;
-            include fastcgi_params;
     }
 
 Change to the sites-enabled directory, remove the default site, and make a link to the the new PHP config you just created
