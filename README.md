@@ -174,13 +174,10 @@ In the *location* section, add `/index.php?query_string` to the try_files sectio
 In the FastCGI section, make the appropriate changes
 
     location ~ \.php$ {
-            # only allow index.php to be run
-            try_files $uri /index.php =404;
+        include snippets/fastcgi-php.conf;
             
-            include snippets/fastcgi-php.conf;
-            
-            # With php-fpm:
-            fastcgi_pass unix:/var/run/php-fpm.sock;
+        # With php7.0-cgi alone:
+        fastcgi_pass 127.0.0.1:9000;
     }
 
 So, your conf file should look like this:
@@ -197,9 +194,6 @@ So, your conf file should look like this:
         server_name virtualboxphpdev;
         
         location ~ \.php$ {
-            # only allow index.php to be run
-            try_files $uri /index.php =404;
-            
             include snippets/fastcgi-php.conf;
             
             # With php7.0-cgi alone:
