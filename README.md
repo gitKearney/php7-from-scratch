@@ -112,6 +112,7 @@ JUST DOUBLE CHECK TO MAKE SURE IT'S SET**
     ...
 
 __ADD PHP TO YOUR PATH__
+
 Assuming you'll be logged into your server not as root, add the PHP binary to
 your .bashrc profile
 
@@ -173,7 +174,7 @@ In the *location* section, add `/index.php?query_string` to the try_files sectio
 In the FastCGI section, make the appropriate changes
 
     location ~ \.php$ {
-            # use for 0 day exploits
+            # only allow index.php to be run
             try_files $uri /index.php =404;
             
             include snippets/fastcgi-php.conf;
@@ -182,13 +183,30 @@ In the FastCGI section, make the appropriate changes
             fastcgi_pass unix:/var/run/php-fpm.sock;
     }
 
-Change to the sites-enabled directory, remove the default site, and make a link to the the new PHP config you just created
+So, your conf file should look like this:
 
-    cd /etc/nginx/sites-enabled
-    sudo unlink default
-    sudo ln -s /etc/nginx/sites-available/myphp7 myphp7
-    sudo nginx -s reload
+    server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
 
+        # path to code (index.php should be in this directory)
+        root /path/to/PHPCODE;
+
+        index index.php;
+        
+        server_name virtualboxphpdev;
+        
+        location ~ \.php$ {
+            # only allow index.php to be run
+            try_files $uri /index.php =404;
+            
+            include snippets/fastcgi-php.conf;
+            
+            # With php7.0-cgi alone:
+            fastcgi_pass 127.0.0.1:9000;
+        }
+    }
+    
 Nginx should now be serving your files
 
 #### Nginx Virtualbox Bug
