@@ -9,7 +9,7 @@ These instructions are ideal for those who want to run PHP in production.
     sudo apt-get install \
     build-essential libssl-dev libcurl4-openssl-dev \
     zlib1g-dev curl libxml2-dev libreadline-dev systemd \
-    bison dkms kpartx openssl pkg-config
+    bison dkms kpartx openssl pkg-config autoconf
     
     # install MySQL
     sudo apt-get install mysql-server mysql-client
@@ -38,9 +38,12 @@ named me. Change this__
     ./configure --prefix=/home/me/bin/php7 \
         --enable-bcmath \
         --enable-fpm \
+        --with-fpm-user=www-data \
+        --with-fpm-group=www-data \
         --enable-ftp \
         --enable-mbstring \
         --enable-mysqlnd \
+        --enable-phpdbg \
         --enable-shmop \
         --enable-sockets \
         --enable-sysvmsg \
@@ -48,8 +51,7 @@ named me. Change this__
         --enable-sysvshm \
         --enable-zip \
         --with-curl \
-        --with-mysqli \
-        --with-mysql-sock=/var/run/mysqlnd \
+        --with-mysql-sock=/var/run/mysqld \
         --with-pear \
         --with-openssl \
         --with-pdo-mysql \
@@ -104,7 +106,6 @@ In your favorite editor, open the www.conf file, and change the user and group
 from nobody to www-data (the user for nginx), and change the listen port to use
 sockets
 
-    [editor] www.conf # this is the file for Nginx
     ...
     user = www-data
     group = www-data
