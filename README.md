@@ -51,7 +51,7 @@ named me. Change this__
         --enable-sysvshm \
         --enable-zip \
         --with-curl \
-        --with-mysql-sock=/var/run/mysqld \
+        --with-pdo-mysql=mysqlnd \
         --with-pear \
         --with-openssl \
         --with-pdo-mysql \
