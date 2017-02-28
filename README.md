@@ -165,13 +165,10 @@ Open *default* and change the root directory to where your code is
 
 Add index.php to the index list
 
-    index indext.html index.htm index.php;
+    index index.php;
 
-In the *location* section, add `/index.php?query_string` to the try_files section
-
-    try_files $uri $uri/ /index.php?query_string;
-
-In the FastCGI section, make the appropriate changes
+Remove the *location* section and make the following changes in the 
+FastCGI section
 
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
