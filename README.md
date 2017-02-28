@@ -103,25 +103,15 @@ You need to create a *php-fpm.conf* file to use Nginx.
     cd /home/me/bin/php7/etc/php-fpm.d/; cp www.conf.default www.conf
 
 In your favorite editor, open the www.conf file, and change the user and group
-from nobody to www-data (the user for nginx), and change the listen port to use
-sockets
+from nobody to www-data (the user for nginx). **THIS SHOULD BE DONE FOR YOU
+JUST DOUBLE CHECK TO MAKE SURE IT'S SET**
 
     ...
     user = www-data
     group = www-data
     ...
-    listen = /var/run/php-fpm.sock
 
-    ...
-    ; Set permissions for unix socket, if one is used. In Linux, read/write
-    ; permissions must be set in order to allow connections from a web server. Many
-    ; BSD-derived systems allow connections regardless of permissions.
-    ; Default Values: user and group are set as the running user
-    ;                 mode is set to 0660
-    listen.owner = www-data
-    listen.group = www-data
-    listen.mode = 0660
-
+__ADD PHP TO YOUR PATH__
 Assuming you'll be logged into your server not as root, add the PHP binary to
 your .bashrc profile
 
