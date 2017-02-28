@@ -1,5 +1,5 @@
 # php7-from-scratch
-Instructions on how to compile PHP 7.1 from source on Ubuntu 16.04 machines. This
+Instructions on how to compile PHP 7.1.2 from source on Ubuntu 16.04 machines. This
 will also include instructions on how to configure the machine for Nginx.
 
 These instructions are ideal for those who want to run PHP in production.
@@ -20,7 +20,7 @@ These instructions are ideal for those who want to run PHP in production.
     # install nginx
     apt-get install nginx
 
-## Download Latest PHP 7.1.1
+## Download Latest PHP 7.1.2
 As of the time of this, PHP 7.1.1 was the latest PHP available. Download the
 tarball (I'll assume BZip) and extract it.
 
@@ -28,9 +28,9 @@ __NOTE: this installs PHP in the user's local bin. In this example, the user is
 named me. Change this__
 
     cd /tmp;
-    wget http://php.net/get/php-7.1.1.tar.bz2/from/this/mirror -O php-7.1.1.tar.bz2
-    tar xf php-7.1.1.tar.bz2
-    cd php-7.1.1
+    wget http://php.net/get/php-7.1.2.tar.bz2/from/this/mirror -O php-7.1.2.tar.bz2
+    tar xf php-7.1.2.tar.bz2
+    cd php-7.1.2
     mkdir -p /home/me/bin/php7
     cat >> build_php.sh
     #!/bin/sh
@@ -71,10 +71,10 @@ Remember, PHP will be installed in the home directory.
     make install
 
 #### Edit the PHP.ini file
-Copy the *php-7.1.1/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
+Copy the *php-7.1.2/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
 the file to *php.ini*
 
-    cp /tmp/php-7.1.1/php.ini-development ~/bin/php7/lib/php.ini
+    cp /tmp/php-7.1.2/php.ini-development ~/bin/php7/lib/php.ini
 
 You'll need to change a few settings
 
@@ -164,21 +164,17 @@ And how you stop
 
     php bin/console server:stop  {your.ip.of.vm}:{port}
 
-__Nginx__ If you're using nginx: install Ubuntu's version
+__Nginx__ If you're using nginx
 
-    sudo apt-get install nginx
+    cd /etc/nginx/sites-available
 
-You can modify the default config, but I'm going to make copy and use the copy
+Open *default* and change the root directory to where your code is
 
-    cd /etc/nginx/sites-available; cp default myphp7
+    root /path/to/your_PHP_project;
 
-Open *myphp7* and change the root directory to where your code is. Since, I'm using Parallels, my directory would look like this
+Add index.php to the index list
 
-    root /media/psf/my_laravel5.2_project;
-
- Add index.php to the index list
-
-    index indext.html index.htm index.php
+    index indext.html index.htm index.php;
 
 In the *location* section, add `/index.php?query_string` to the try_files section
 
