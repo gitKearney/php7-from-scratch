@@ -28,7 +28,7 @@ __NOTE: this installs PHP in the user's local bin. In this example, the user is
 named me. Change this__
 
     cd /tmp;
-    wget http://php.net/get/php-7.1.7.tar.bz2/from/this/mirror -O php-7.1.2.tar.bz2
+    wget http://php.net/get/php-7.1.7.tar.bz2/from/this/mirror -O php-7.1.7.tar.bz2
     tar xf php-7.1.7.tar.bz2
     cd php-7.1.7
     mkdir -p /home/me/bin/php7
