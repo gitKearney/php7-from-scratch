@@ -1,5 +1,5 @@
 # php7-from-scratch
-Instructions on how to compile PHP 7.1.2 from source on Ubuntu 16.04 machines. This
+Instructions on how to compile PHP 7.1.7 from source on Ubuntu 16.04 machines. This
 will also include instructions on how to configure the machine for Nginx.
 
 These instructions are ideal for those who want to run PHP in production.
@@ -20,17 +20,17 @@ These instructions are ideal for those who want to run PHP in production.
     # install nginx
     apt-get install nginx
 
-## Download Latest PHP 7.1.2
-As of the time of this, PHP 7.1.2 was the latest PHP available. Download the
+## Download Latest PHP 7.1.7
+As of the time of this, PHP 7.1.7 was the latest PHP available. Download the
 tarball (I'll assume BZip) and extract it.
 
 __NOTE: this installs PHP in the user's local bin. In this example, the user is
 named me. Change this__
 
     cd /tmp;
-    wget http://php.net/get/php-7.1.2.tar.bz2/from/this/mirror -O php-7.1.2.tar.bz2
-    tar xf php-7.1.2.tar.bz2
-    cd php-7.1.2
+    wget http://php.net/get/php-7.1.7.tar.bz2/from/this/mirror -O php-7.1.2.tar.bz2
+    tar xf php-7.1.7.tar.bz2
+    cd php-7.1.7
     mkdir -p /home/me/bin/php7
     cat >> build_php.sh
     #!/bin/sh
@@ -71,10 +71,10 @@ Remember, PHP will be installed in the home directory.
     make install
 
 #### Edit the PHP.ini file
-Copy the *php-7.1.2/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
+Copy the *php-7.1.7/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
 the file to *php.ini*
 
-    cp /tmp/php-7.1.2/php.ini-development ~/bin/php7/lib/php.ini
+    cp /tmp/php-7.1.7/php.ini-development ~/bin/php7/lib/php.ini
 
 You'll need to change a few settings
 
