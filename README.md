@@ -14,9 +14,6 @@ These instructions are ideal for those who want to run PHP in production.
     # install MySQL
     sudo apt-get install mysql-server mysql-client
     
-    # install postgres 9.5
-    sudo apt-get install postgresql postgresql-contrib postgresql-server-dev-9.5
-    
     # install nginx
     apt-get install nginx
 
@@ -58,8 +55,7 @@ named me. Change this__
         --with-readline \
         --with-zlib \
         --enable-pcntl \
-        --with-readline \
-        --with-pgsql
+        --with-readline
 
     # press ctrl+c to exit out of cat
 
