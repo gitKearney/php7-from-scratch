@@ -1,5 +1,5 @@
 # php7-from-scratch
-Instructions on how to compile PHP 7.1.7 from source on Ubuntu 16.04 machines. This
+Instructions on how to compile PHP 7.1.11 from source on Ubuntu 16.04 machines. This
 will also include instructions on how to configure the machine for Nginx.
 
 These instructions are ideal for those who want to run PHP in production.
@@ -14,20 +14,27 @@ These instructions are ideal for those who want to run PHP in production.
     # install MySQL
     sudo apt-get install mysql-server mysql-client
     
+    # install Postgres
+    sudo apt-get install libpq5 libsensors4 postgresql-9.5 postgresql-client-9.5 \
+    postgresql-client-common postgresql-common postgresql-contrib-9.5 sysstat
+    
+    # install development packages
+    sudo apt-get install postgresql-server-dev-9.5
+    
     # install nginx
     apt-get install nginx
 
-## Download Latest PHP 7.1.7
-As of the time of this, PHP 7.1.7 was the latest PHP available. Download the
+## Download Latest PHP 7.1.11
+As of the time of this, PHP 7.1.11 was the latest PHP available. Download the
 tarball (I'll assume BZip) and extract it.
 
 __NOTE: this installs PHP in the user's local bin. In this example, the user is
 named me. Change this__
 
     cd /tmp;
-    wget http://php.net/get/php-7.1.7.tar.bz2/from/this/mirror -O php-7.1.7.tar.bz2
-    tar xf php-7.1.7.tar.bz2
-    cd php-7.1.7
+    wget http://php.net/get/php-7.1.11.tar.bz2/from/this/mirror -O php-7.1.11.tar.bz2
+    tar xf php-7.1.11.tar.bz2
+    cd php-7.1.11
     mkdir -p /home/me/bin/php7
     cat >> build_php.sh
     #!/bin/sh
@@ -55,7 +62,8 @@ named me. Change this__
         --with-readline \
         --with-zlib \
         --enable-pcntl \
-        --with-readline
+        --with-readline \
+        --with-pdo-pgsql=/usr/bin/pg_config
 
     # press ctrl+c to exit out of cat
 
@@ -67,10 +75,10 @@ Remember, PHP will be installed in the home directory.
     make install
 
 #### Edit the PHP.ini file
-Copy the *php-7.1.7/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
+Copy the *php-7.1.11/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
 the file to *php.ini*
 
-    cp /tmp/php-7.1.7/php.ini-development ~/bin/php7/lib/php.ini
+    cp /tmp/php-7.1.11/php.ini-development ~/bin/php7/lib/php.ini
 
 You'll need to change a few settings
 
@@ -137,8 +145,8 @@ You'll have to start *php-fpm* manually to get it working with NginX
 
 ## WEBSERVERS
 
-__Laravel 5.2__
-If you're using Laravel 5.2 this is how you start the built in PHP server
+__Laravel 5.5__
+If you're using Laravel 5.5 this is how you start the built in PHP server
 
     php artisan serve --host=your.ip.of.vm --port=8000
 
