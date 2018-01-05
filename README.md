@@ -65,6 +65,14 @@ named me. Change this__
     #!/bin/sh
 
     ./configure --prefix=/home/me/bin/php7 \
+        # remove the following 3 lines if you did not install MySQL
+        --enable-mysqlnd \
+        --with-pdo-mysql \
+        --with-pdo-mysql=mysqlnd \
+
+        # remove this line if you did not install PostgreSQL
+        --with-pdo-pgsql=/usr/bin/pg_config \
+
         --enable-bcmath \
         --enable-fpm \
         --with-fpm-user=www-data \
@@ -82,18 +90,7 @@ named me. Change this__
         --with-openssl \
         --with-zlib \
         --enable-pcntl \
-
-
-        # remove the following 3 lines if you did not install MySQL
-        --enable-mysqlnd \
-        --with-pdo-mysql \
-        --with-pdo-mysql=mysqlnd \
-
-        # remove this line if you did not install PostgreSQL
-        --with-pdo-pgsql=/usr/bin/pg_config
-
-        # this is the last line of the file 
-        --with-readline \
+        --with-readline
 
     # press ctrl+c to exit out of cat
 
