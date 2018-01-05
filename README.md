@@ -28,7 +28,7 @@ MySQL, Postgres, composer, and Nginx.
     sudo apt-get install build-essential autoconf libtool \
       libssl-dev libcurl4-openssl-dev \
       zlib1g-dev curl libxml2-dev libreadline7 openssl \
-      nginx
+      nginx pkg-config
 
 ## Install MySQL
 If you do not plan on installing MySQL, then skip this step
@@ -39,9 +39,8 @@ If you don't plan on installing PostgreSQL then skip this step.
 
     sudo apt-get install postgresql-9.6 postgresql-client-9.6 postgresql-contrib-9.6 libpq-dev
 
-## Fix easy.h error
-For some reason, Debian distros don't report the correct location of openSSL headers.
-PHP looks in the wrong location for the headers. This fixes that.
+## Fix easy.h error __IF__ you do not install `pkg-config`
+For some reason, Debian based distros don't report the correct location of openSSL headers. __IF__ you do not install the package `pkg-config` PHP looks in the wrong location for the headers. This symlink fixes that.
 
     sudo ln -s /usr/include/x86_64-linux-gnu/curl /usr/include/curl
 
