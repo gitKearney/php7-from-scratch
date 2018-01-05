@@ -70,7 +70,6 @@ named me. Change this__
         --with-fpm-user=www-data \
         --with-fpm-group=www-data \
         --enable-mbstring \
-        --enable-mysqlnd \
         --enable-phpdbg \
         --enable-shmop \
         --enable-sockets \
@@ -79,14 +78,22 @@ named me. Change this__
         --enable-sysvshm \
         --enable-zip \
         --with-curl \
-        --with-pdo-mysql=mysqlnd \
         --with-pear \
         --with-openssl \
-        --with-pdo-mysql \
         --with-zlib \
         --enable-pcntl \
-        --with-readline \
+
+
+        # remove the following 3 lines if you did not install MySQL
+        --enable-mysqlnd \
+        --with-pdo-mysql \
+        --with-pdo-mysql=mysqlnd \
+
+        # remove this line if you did not install PostgreSQL
         --with-pdo-pgsql=/usr/bin/pg_config
+
+        # this is the last line of the file 
+        --with-readline \
 
     # press ctrl+c to exit out of cat
 
