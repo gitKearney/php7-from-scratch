@@ -2,7 +2,9 @@
 Instructions on how to compile PHP 7.2.1 from source on Ubuntu 17.10 machines. This
 will also include instructions on how to configure the machine for Nginx.
 
-These instructions are ideal for those who want to run PHP in production.
+These instructions are ideal for those who want to run PHP in production. This version of PHP lacks intrusive packages like Suhosin. Also, you don't have install any packages like php-json, php-mysql, or php-common/php-cli.
+
+Instead, you have 1 PHP binary, and a PHP FPM binary.
 
 ## Create directory for the PHP Binaries
 The PHP binaries will be installed in a `bin` directory off of the `~/` directory.
@@ -15,6 +17,11 @@ will be first on the list - and the first one to be run
 
 Open the file `~/.bashrc` and add the following to the end of it
 
+    cat >> ~/.bashrc
+
+Now, paste the following into your terminal
+
+    # add local bin directory
     if [ -d "$HOME/bin" ] ; then
       PATH="$HOME/bin:$PATH"
     fi
@@ -27,7 +34,8 @@ MySQL, Postgres, composer, and Nginx.
 
     sudo apt-get install autoconf build-essential curl libtool \
       libssl-dev libcurl4-openssl-dev libxml2-dev libreadline7 \
-      libreadline-dev nginx openssl pkg-config zlib1g-dev
+      libreadline-dev libzip-dev libzip4 nginx openssl \
+      pkg-config zlib1g-dev
 
 ## Install MySQL
 If you do not plan on installing MySQL, then skip this step
@@ -36,6 +44,9 @@ If you do not plan on installing MySQL, then skip this step
 
 ## install Postgres
 If you don't plan on installing PostgreSQL then skip this step.
+
+    # I like to add a postgres user (but, this is optional)
+    sudo adduser postgres
 
     sudo apt-get install postgresql-9.6 postgresql-client-9.6 postgresql-contrib-9.6 libpq-dev
 
@@ -47,8 +58,8 @@ For some reason, Debian based distros don't report the correct location of openS
 ## Download Latest PHP 7.2.1
 As of the time of this, PHP 7.2.1 was the latest PHP available.
 
-__NOTE: this installs PHP in the user's local bin. In this example, the user is
-named me. Change this__
+__NOTE: this installs PHP in the user's local bin directory, not
+globally!__
 
     # create the Download directory
     mkdir -p ~/Downloads/
@@ -59,19 +70,30 @@ named me. Change this__
     tar -xf php-7.2.1.tar.xz
     cd php-7.2.1
 
-    # create our build script
-    cat >> build_php.sh
+
+__IF YOU DID NOT INSTALL MYSQL, REMOVE THE FOLLOWING LINES FROM THIS SCRIPT__
+
+    --enable-mysqlnd \
+    --with-pdo-mysql \
+    --with-pdo-mysql=mysqlnd \
+
+__IF YOU DID NOT INSTALL POSTGRES, REMOVE THE FOLLOWING LINES FROM THIS SCRIPT__
+
+    --with-pdo-pgsql=/usr/bin/pg_config \
+
+Paste the following command into the terminal, hit enter
+
+    cat > build_php.sh
+
+Then paste this
+
     #!/bin/sh
 
     ./configure --prefix=$HOME/bin/php7 \
-        # remove the following 3 lines if you did not install MySQL
         --enable-mysqlnd \
         --with-pdo-mysql \
         --with-pdo-mysql=mysqlnd \
-
-        # remove this line if you did not install PostgreSQL
         --with-pdo-pgsql=/usr/bin/pg_config \
-
         --enable-bcmath \
         --enable-fpm \
         --with-fpm-user=www-data \
@@ -84,7 +106,8 @@ named me. Change this__
         --enable-sysvsem \
         --enable-sysvshm \
         --enable-zip \
-        --with-zlib
+        --with-libzip=/usr/lib/x86_64-linux-gnu \
+        --with-zlib \
         --with-curl \
         --with-pear \
         --with-openssl \
@@ -222,4 +245,60 @@ Nginx should now be serving your files
 #### Nginx Virtualbox Bug
 You'll need to edit `/etc/nginx/nginx.conf` and change the line `sendfile on;` to `sendfile off;`
 
-What will happen is changes to static files (CSS and Javascript) files won't be updated. Turning off _sendfile_ will cause Nginx to serve the file via a different method and the new file's changes will be displayed immediately
+What will happen is changes to static files (CSS and Javascript) files won't be updated. Turning off _sendfile_ will cause Nginx to serve the file via a different method and the new file's changes will be displayed immediately.
+
+## Development on Virtual Machines
+If you are developing on a virtual machine, like VirtualBox or Parallels and want to use this setup for development, heres how to set up the virtual machine.
+
+Again, this will be for an Ubuntu server. We will mount a directory on your harddrive and sync it to a directory on the virtual machine.
+
+# VIRTUALBOX
+### Step 1: mount guest additions
+Insert the guest additions CD image, then run this on the Linux VM
+
+    sudo mount /dev/cdrom /media/cdrom
+
+### Step 2: install guest additions:
+
+   sudo /media/cdrom/VBoxLinuxAdditions.run
+
+### Step 3: Create the mount point for Linux to mount the shared folder
+Run this in the Linux virtual machine
+
+    mkdir ~/host
+
+On VirtualBox settings page, add a shared folder by navigating to the folder you want to share. Then, click on the folder and name it "share" in the VirtualBox GUI
+
+### Step 4: Mount directory
+You'll have to run this command after every restart of the guest OS
+
+    sudo mount -t vboxsf -o rw,uid=1000,gid=1000 share ~/host
+
+# PARALLELS
+
+### Step 1: make sure CD drive is empty
+
+    sudo eject /dev/cdrom
+
+### Step 2: Connect the parallels tools ISO from the menubar
+
+### Step 3: Mount the Parallels Tools CD
+
+    sudo mkdir -p /media/cdrom
+
+### Step 4: Install headers to build Parallel Tools
+
+    sudo apt-get install linux-headers-$(uname -r)
+    sudo apt-get install kpartx dkms
+
+### Step 5: Mount the CD and change to the CD-ROM directory    
+
+    sudo mount /dev/cdrom /media/cdrom
+    cd /media/cdrom
+
+### Step 6: Install Parallel Tools
+
+    sudo ./install
+
+
+what is mount -o exec?
