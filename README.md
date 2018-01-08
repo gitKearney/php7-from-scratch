@@ -300,5 +300,3 @@ You'll have to run this command after every restart of the guest OS
 
     sudo ./install
 
-
-what is mount -o exec?
