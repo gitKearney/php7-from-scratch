@@ -25,13 +25,13 @@ Install the following packages. These are needed for PHP to communicate with
 MySQL, Postgres, composer, and Nginx.
 
 
-    sudo apt-get install build-essential autoconf libtool \
-      libssl-dev libcurl4-openssl-dev \
-      zlib1g-dev curl libxml2-dev libreadline7 openssl \
-      nginx pkg-config
+    sudo apt-get install autoconf build-essential curl libtool \
+      libssl-dev libcurl4-openssl-dev libxml2-dev libreadline7 \
+      libreadline-dev nginx openssl pkg-config zlib1g-dev
 
 ## Install MySQL
 If you do not plan on installing MySQL, then skip this step
+
     sudo apt-get install mysql-server mysql-client
 
 ## install Postgres
@@ -43,7 +43,6 @@ If you don't plan on installing PostgreSQL then skip this step.
 For some reason, Debian based distros don't report the correct location of openSSL headers. __IF__ you do not install the package `pkg-config` PHP looks in the wrong location for the headers. This symlink fixes that.
 
     sudo ln -s /usr/include/x86_64-linux-gnu/curl /usr/include/curl
-
 
 ## Download Latest PHP 7.2.1
 As of the time of this, PHP 7.2.1 was the latest PHP available.
@@ -64,7 +63,7 @@ named me. Change this__
     cat >> build_php.sh
     #!/bin/sh
 
-    ./configure --prefix=/home/me/bin/php7 \
+    ./configure --prefix=$HOME/bin/php7 \
         # remove the following 3 lines if you did not install MySQL
         --enable-mysqlnd \
         --with-pdo-mysql \
@@ -85,10 +84,10 @@ named me. Change this__
         --enable-sysvsem \
         --enable-sysvshm \
         --enable-zip \
+        --with-zlib
         --with-curl \
         --with-pear \
         --with-openssl \
-        --with-zlib \
         --enable-pcntl \
         --with-readline
 
