@@ -98,6 +98,7 @@ Then paste this
         --enable-fpm \
         --with-fpm-user=www-data \
         --with-fpm-group=www-data \
+        --disable-cgi \
         --enable-mbstring \
         --enable-phpdbg \
         --enable-shmop \
@@ -124,7 +125,7 @@ Remember, PHP will be installed in the home directory.
     make install
 
 #### Edit the PHP.ini file
-Copy the *php-7.1.11/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
+Copy the *php-7.2.1/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
 the file to *php.ini*
 
     cp php.ini-development ~/bin/php7/lib/php.ini
@@ -167,8 +168,8 @@ JUST DOUBLE CHECK TO MAKE SURE IT'S SET**
 
 __ADD PHP TO YOUR PATH__
 
-Assuming you'll be logged into your server not as root, add the PHP binary to
-your .bashrc profile
+Assuming you'll be logged into your server not as root, create symbolic links to
+the PHP binaries in ~/bin
 
     cd ~/bin
     ln -s php7/bin/php php
@@ -232,12 +233,21 @@ So, your conf file should look like this:
 
         server_name virtualboxphpdev;
 
+        location / {
+          try_files $uri $uri/ /index.php?query_string;
+        }
+
         location ~ \.php$ {
             include snippets/fastcgi-php.conf;
 
             # With php7.0-cgi alone:
             fastcgi_pass 127.0.0.1:9000;
         }
+
+        location ~ /\.ht {
+          # deny access to .htaccess files
+          deny all;
+	      }
     }
 
 Nginx should now be serving your files
@@ -265,4 +275,4 @@ Insert the guest additions CD image, then run this on the Linux VM
 ### Step 3: Add your user to the vboxsf
 
     sudo adduser PUT_YOUR_USERNAME_HERE vboxsf
-    sudo adduser var-www vboxsf
+    sudo adduser www-data vboxsf
