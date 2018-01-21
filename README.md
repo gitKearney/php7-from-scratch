@@ -262,41 +262,7 @@ Insert the guest additions CD image, then run this on the Linux VM
 
    sudo /media/cdrom/VBoxLinuxAdditions.run
 
-### Step 3: Create the mount point for Linux to mount the shared folder
-Run this in the Linux virtual machine
+### Step 3: Add your user to the vboxsf
 
-    mkdir ~/host
-
-On VirtualBox settings page, add a shared folder by navigating to the folder you want to share. Then, click on the folder and name it "share" in the VirtualBox GUI
-
-### Step 4: Mount directory
-You'll have to run this command after every restart of the guest OS
-
-    sudo mount -t vboxsf -o rw,uid=1000,gid=1000 share ~/host
-
-# PARALLELS
-
-### Step 1: make sure CD drive is empty
-
-    sudo eject /dev/cdrom
-
-### Step 2: Connect the parallels tools ISO from the menubar
-
-### Step 3: Mount the Parallels Tools CD
-
-    sudo mkdir -p /media/cdrom
-
-### Step 4: Install headers to build Parallel Tools
-
-    sudo apt-get install linux-headers-$(uname -r)
-    sudo apt-get install kpartx dkms
-
-### Step 5: Mount the CD and change to the CD-ROM directory    
-
-    sudo mount /dev/cdrom /media/cdrom
-    cd /media/cdrom
-
-### Step 6: Install Parallel Tools
-
-    sudo ./install
-
+    sudo adduser PUT_YOUR_USERNAME_HERE vboxsf
+    sudo adduser var-www vboxsf
