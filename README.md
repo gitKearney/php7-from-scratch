@@ -1,5 +1,5 @@
 # php7-from-scratch
-Instructions on how to compile PHP 7.2.1 from source on Ubuntu 17.10 machines. This
+Instructions on how to compile PHP 7.2.2 from source on Ubuntu 17.10 machines. This
 will also include instructions on how to configure the machine for Nginx.
 
 These instructions are ideal for those who want to run PHP in production. This version of PHP lacks intrusive packages like Suhosin. Also, you don't have install any packages like php-json, php-mysql, or php-common/php-cli.
@@ -35,7 +35,7 @@ MySQL, Postgres, composer, and Nginx.
     sudo apt-get install autoconf build-essential curl libtool \
       libssl-dev libcurl4-openssl-dev libxml2-dev libreadline7 \
       libreadline-dev libzip-dev libzip4 nginx openssl \
-      pkg-config zlib1g-dev
+      pkg-config zlib1g-dev libargon2-0-dev argon2
 
 ## Install MySQL
 If you do not plan on installing MySQL, then skip this step
@@ -55,8 +55,8 @@ For some reason, Debian based distros don't report the correct location of openS
 
     sudo ln -s /usr/include/x86_64-linux-gnu/curl /usr/include/curl
 
-## Download Latest PHP 7.2.1
-As of the time of this, PHP 7.2.1 was the latest PHP available.
+## Download Latest PHP 7.2.2
+As of the time of this, PHP 7.2.2 was the latest PHP available.
 
 __NOTE: this installs PHP in the user's local bin directory, not
 globally!__
@@ -66,9 +66,9 @@ globally!__
 
     # change to the Downloads directory and fetch the PHP 7.2 tarball
     cd ~/Downloads;
-    wget http://us3.php.net/get/php-7.2.1.tar.xz/from/this/mirror -O php-7.2.1.tar.xz
-    tar -xf php-7.2.1.tar.xz
-    cd php-7.2.1
+    wget http://us3.php.net/get/php-7.2.2.tar.xz/from/this/mirror -O php-7.2.2.tar.xz
+    tar -xf php-7.2.2.tar.xz
+    cd php-7.2.2
 
 
 __IF YOU DID NOT INSTALL MYSQL, REMOVE THE FOLLOWING LINES FROM THIS SCRIPT__
@@ -113,7 +113,8 @@ Then paste this
         --with-pear \
         --with-openssl \
         --enable-pcntl \
-        --with-readline
+        --with-readline \
+        --with-password-argon2
 
     # press ctrl+c to exit out of cat
 
@@ -125,7 +126,7 @@ Remember, PHP will be installed in the home directory.
     make install
 
 #### Edit the PHP.ini file
-Copy the *php-7.2.1/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
+Copy the *php-7.2.2/php.ini-development* file from the source directory to the *~/bin/php7/lib/* directory, and rename
 the file to *php.ini*
 
     cp php.ini-development ~/bin/php7/lib/php.ini
@@ -173,7 +174,6 @@ the PHP binaries in ~/bin
 
     cd ~/bin
     ln -s php7/bin/php php
-    ln -s php7/bin/php-cgi php-cgi
     ln -s php7/bin/php-config php-config
     ln -s php7/bin/phpize phpize
     ln -s php7/bin/phar.phar phar
@@ -270,7 +270,7 @@ Insert the guest additions CD image, then run this on the Linux VM
 
 ### Step 2: install guest additions:
 
-   sudo /media/cdrom/VBoxLinuxAdditions.run
+    sudo /media/cdrom/VBoxLinuxAdditions.run
 
 ### Step 3: Add your user to the vboxsf
 
