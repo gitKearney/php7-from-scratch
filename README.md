@@ -35,7 +35,8 @@ MySQL, Postgres, composer, and Nginx.
     sudo apt-get install autoconf build-essential curl libtool \
       libssl-dev libcurl4-openssl-dev libxml2-dev libreadline7 \
       libreadline-dev libzip-dev libzip4 nginx openssl \
-      pkg-config zlib1g-dev libargon2-0-dev argon2
+      pkg-config zlib1g-dev libargon2-0-dev argon2 \
+      libsodium-dev
 
 ## Install MySQL
 If you do not plan on installing MySQL, then skip this step
@@ -114,7 +115,8 @@ Then paste this
         --with-openssl \
         --enable-pcntl \
         --with-readline \
-        --with-password-argon2
+        --with-password-argon2 \
+        --with-sodium
 
     # press ctrl+c to exit out of cat
 
