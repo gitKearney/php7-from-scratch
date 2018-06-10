@@ -33,8 +33,7 @@ MySQL, Postgres, composer, and Nginx.
 
 
     sudo apt-get install autoconf build-essential curl libtool \
-      libssl-dev libcurl4-openssl-dev libxml2-dev libreadline7 \
-      libreadline-dev libzip-dev libzip4 nginx openssl \
+      libssl-dev libcurl4-openssl-dev libxml2-dev  nginx openssl \
       pkg-config zlib1g-dev libargon2-0-dev argon2 \
       libsodium-dev
 
@@ -72,15 +71,39 @@ globally!__
     cd php-7.2.2
 
 
-__IF YOU DID NOT INSTALL MYSQL, REMOVE THE FOLLOWING LINES FROM THIS SCRIPT__
+__IF YOU INSTALL MYSQL, ADD THIS TO THE FOLLOWING LINES FROM THIS SCRIPT__
 
     --enable-mysqlnd \
     --with-pdo-mysql \
     --with-pdo-mysql=mysqlnd \
 
-__IF YOU DID NOT INSTALL POSTGRES, REMOVE THE FOLLOWING LINES FROM THIS SCRIPT__
+__IF YOU INSTALL POSTGRES, ADD THIS THE FOLLOWING LINES FROM THIS SCRIPT__
 
     --with-pdo-pgsql=/usr/bin/pg_config \
+
+
+__OPTIONAL BUILD OPTIONS & INSTALLS__
+
+
+### TO WORK WITH ZIP FILES
+
+Install the ZIP libraries
+
+    sudo apt-get install libzip-dev libzip4
+
+And, add this to the build PHP build script below
+
+    --enable-zip \
+    --with-libzip=/usr/lib/x86_64-linux-gnu \
+
+### TO USE PsySH - A PHP repl useful for debugging Laravel apps
+
+    sudo apt-get install libreadline7 libreadline-dev
+
+And, add the following to the PHP build script below
+
+    --with-readline \
+
 
 Paste the following command into the terminal, hit enter
 
@@ -90,31 +113,27 @@ Then paste this
 
     #!/bin/sh
 
-    ./configure --prefix=$HOME/bin/php7 \
-        --enable-mysqlnd \
-        --with-pdo-mysql \
-        --with-pdo-mysql=mysqlnd \
-        --with-pdo-pgsql=/usr/bin/pg_config \
+    INSTALL_DIR=$HOME/bin/php7
+
+    mkdir -p $INSTALL_DIR
+
+    ./configure --prefix=$INSTALL_DIR \
         --enable-bcmath \
         --enable-fpm \
         --with-fpm-user=www-data \
         --with-fpm-group=www-data \
         --disable-cgi \
         --enable-mbstring \
-        --enable-phpdbg \
         --enable-shmop \
         --enable-sockets \
         --enable-sysvmsg \
         --enable-sysvsem \
         --enable-sysvshm \
-        --enable-zip \
-        --with-libzip=/usr/lib/x86_64-linux-gnu \
         --with-zlib \
         --with-curl \
         --with-pear \
         --with-openssl \
         --enable-pcntl \
-        --with-readline \
         --with-password-argon2 \
         --with-sodium
 
@@ -143,7 +162,7 @@ Change your timezone
     ; http://php.net/date.timezone
     date.timezone = America/Chicago
 
-The MySQL socket PDO connects to
+The MySQL socket PDO connects to (if MySQL is running locally)
 
     ; Default socket name for local MySQL connects.  If empty, uses the built-in
     ; MySQL defaults.
@@ -169,6 +188,22 @@ JUST DOUBLE CHECK TO MAKE SURE IT'S SET**
     group = www-data
     ...
 
+
+__IF YOU WANT TO USE SOCKETS INSTEAD OF TCP PORT 9000__
+
+change `listen` from
+
+    listen = 127.0.0.1:9000
+to
+
+    listen = /var/run/php-fpm.sock
+
+also, uncomment out the `listen.ower`, `listen.group`, & `listen.mode` variables
+
+    listen.owner = www-data
+    listen.group = www-data
+    listen.mode = 0660
+
 __ADD PHP TO YOUR PATH__
 
 Assuming you'll be logged into your server not as root, create symbolic links to
@@ -186,7 +221,16 @@ the PHP binaries in ~/bin
 ### Start PHP-FPM
 You'll have to start *php-fpm* manually to get it working with NginX
 
-    sudo ~/bin/php7/sbin/php-fpm
+    sudo $HOME/bin/php7/sbin/php-fpm
+
+### Run PHP-FPM at Boot Time
+To run the PHP-FPM process whenever the server reboots run the following command
+
+    sudo crontab -eu root
+
+Then add the following line to the crontab
+
+    @reboot /home/me/bin/php-fpm
 
 ## WEBSERVERS
 
@@ -218,8 +262,12 @@ FastCGI section
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
 
-        # With php7.0-cgi alone:
-        fastcgi_pass 127.0.0.1:9000;
+        # If you want to use a TCP port, un-comment this
+        # fastcgi_pass 127.0.0.1:9000;
+
+        # ...OR
+        # If you want to use Unix sockets, un-comment this
+        # fastcgi_pass unix:/var/run/php-fpm.sock;
     }
 
 So, your conf file should look like this:
@@ -227,25 +275,28 @@ So, your conf file should look like this:
     server {
         listen 80 default_server;
         listen [::]:80 default_server;
-
+        
         # path to code (index.php should be in this directory)
         root /path/to/PHPCODE;
-
+        
         index index.php;
-
-        server_name virtualboxphpdev;
-
+        
+        server_name phpdevbox;
+        
         location / {
           try_files $uri $uri/ /index.php?query_string;
         }
-
+        
         location ~ \.php$ {
             include snippets/fastcgi-php.conf;
-
-            # With php7.0-cgi alone:
-            fastcgi_pass 127.0.0.1:9000;
+        
+            # use this if you want to use TCP:
+            # fastcgi_pass 127.0.0.1:9000;
+            
+            # use this if you want to use sockets
+            # fastcgi_pass unix:/var/run/php-fpm.sock;
         }
-
+        
         location ~ /\.ht {
           # deny access to .htaccess files
           deny all;
@@ -260,7 +311,7 @@ You'll need to edit `/etc/nginx/nginx.conf` and change the line `sendfile on;` t
 What will happen is changes to static files (CSS and Javascript) files won't be updated. Turning off _sendfile_ will cause Nginx to serve the file via a different method and the new file's changes will be displayed immediately.
 
 ## Development on Virtual Machines
-If you are developing on a virtual machine, like VirtualBox or Parallels and want to use this setup for development, heres how to set up the virtual machine.
+If you are developing on VirtualBox and want to use this setup for development, heres how to set up the virtual machine.
 
 Again, this will be for an Ubuntu server. We will mount a directory on your harddrive and sync it to a directory on the virtual machine.
 
@@ -278,3 +329,8 @@ Insert the guest additions CD image, then run this on the Linux VM
 
     sudo adduser PUT_YOUR_USERNAME_HERE vboxsf
     sudo adduser www-data vboxsf
+
+### STEP 4: Add Shared Directory
+Power off the virtual machine, add a shared directory, then reboot your VM
+
+The shared directory will be located at `/media/sf_SHARED_DIRECTORY_NAME`
