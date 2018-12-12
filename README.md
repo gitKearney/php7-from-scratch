@@ -429,9 +429,12 @@ If you want to use the built in PHP web-server
     php -S ip.of.your.machine:port_number
 
 ### Nginx
-While, you can use Nginx for testing, it's not the best alternative. Follow
-the instructions found in the above step
-__Using PHP with Nginx (production mode)__ on how to setup Nginx
+While, you can use Nginx for testing, it's not the best alternative. One of the
+issue you will find is that Nginx times out.
+
+Follow the instructions found in the section 
+__Using PHP with Nginx (production mode)__ on how to setup Nginx to serve PHP
+files from your VM
 
 #### Nginx Virtualbox Bug
 You'll need to edit `/etc/nginx/nginx.conf` and change the line 
@@ -470,7 +473,36 @@ script
 ### STEP 4: Add Shared Directory
 Power off the virtual machine, add a shared directory, then reboot your VM
 
-The shared directory will be located at `/media/sf_SHARED_DIRECTORY_NAME`
+The shared directory will be located at `/media/sf_SHARED_DIRECTORY_NAME`\
+
+### Step 5: Connect your IDE to the remote server
+Using VSCode, you need to create a new Debug configuration file
+
+ * Install PHP Intellesense and PHP Xdebug extensions
+ * Click the bug icon on the left hand side
+ * Click the cog and select PHP
+
+Paste the following snippet into the `launch.json` file
+
+    {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Listen for XDebug",
+                "type": "php",
+                "request": "launch",
+                "port": 9000,
+                "pathMappings": {
+                    "/home/phpuser/cifs_share": "${workspaceRoot}"
+                }
+            }
+        ]
+    }
+
+The _pathMappings_ object contains a key where the code lives on the remote
+server, and its value is where the code lives on your local development box
+
+
 
 ## Step 15: Using XDebug, Local Development
 The following is how to setup xdebug if you are running your code locally,
@@ -496,3 +528,4 @@ To start VSCode's debugger
  * click the green play button to the left of the dropdown menu
  * any breakpoints in the code, the debugger will pause execution
    allowing you to step through the code
+
