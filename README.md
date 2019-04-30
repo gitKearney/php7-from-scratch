@@ -1,5 +1,7 @@
 # PHP7-from-scratch
-## Instructions on how to compile PHP 7.3.4 from source on Ubuntu 18.10 machines. 
+
+## Instructions on how to compile PHP 7.3.4 from source on Ubuntu 18.10 machines
+
 This will also include instructions on how to configure the machine for Nginx.
 
 These instructions are ideal for those who want to run PHP in production. 
@@ -11,12 +13,14 @@ And added benefit, is you don't have install any packages like
 Instead, you have 1 PHP binary, and a PHP FPM binary.
 
 ## Step 1: Create directory for the PHP Binaries
+
 The PHP binaries will be installed in a `bin` directory off of the user's
 home directory.
 
     mkdir -p ~/bin/
 
 ## Step 2: Add the bin directory to your Path
+
 This will allow you to use type `php` anywhere and the version of PHP we're 
 compiling will be first on the list - and the first one to be run
 
@@ -29,15 +33,14 @@ Now, paste the following into your terminal
     # add local bin directory
     if [ -d "$HOME/bin" ] ; then
       PATH="$HOME/bin:$PATH"
-      PATH="php7/bin:$HOME/bin/php7/sbin:$PATH"
     fi
 
     # press ctrl-c to exit cat
 
 ## Step 3: Install packages to prepare our system
+
 Install the following packages. These are needed for PHP to communicate with
 MySQL, Postgres, composer, and Nginx.
-
 
     sudo apt-get install autoconf build-essential libtool \
       libssl-dev libcurl4-openssl-dev nginx openssl \
@@ -45,11 +48,13 @@ MySQL, Postgres, composer, and Nginx.
       libsodium-dev
 
 ### Install MySQL
+
 If you do not plan on installing MySQL, then _skip this step_
 
     sudo apt-get install mysql-server mysql-client
 
 ### install Postgres
+
 If you don't plan on installing PostgreSQL then _skip this step_
 
     # I like to add a postgres user (but, this is optional)
@@ -59,7 +64,8 @@ If you don't plan on installing PostgreSQL then _skip this step_
     postgresql-contrib-9.6 libpq-dev
 
 ### Fix easy.h error __IF__ you do not install `pkg-config`
-__IF__ you installed the package `pkg-config` _skip this step_ 
+
+__IF__ you installed the package `pkg-config` _skip this step_
 
 Debian based distros don't report the correct location of 
 openSSL headers. Without the `pkg-config` package PHP looks in the wrong 
@@ -68,6 +74,7 @@ location for the headers. This symlink fixes that.
     sudo ln -s /usr/include/x86_64-linux-gnu/curl /usr/include/curl
 
 ## Step 4: Download Latest PHP 7.3.x
+
 As of the time of this, PHP 7.3.4 was the latest PHP available.
 
 __NOTE: this installs PHP in the user's local bin directory, not
@@ -180,6 +187,7 @@ And, add the following to the PHP build script below
     --disable-dom
 
 ## Step 6: Compile PHP
+
 The next three commands create a Makefile so the `make` command knows how to 
 build PHP, where to install the binaries at, what options PHP should be built
 with
@@ -193,6 +201,7 @@ greatly
     make install
 
 ## Step 7: Edit the PHP.ini file
+
 Copy the *php-7.3.4/php.ini-development* file from the source directory to
 the *~/bin/php7/lib/* directory, and rename the file to *php.ini*
 
@@ -202,6 +211,7 @@ the *~/bin/php7/lib/* directory, and rename the file to *php.ini*
 ## Step 8: Edit the php.ini file to change your sessings
 
 ### Change your timezone
+
 You'll need to set your timezone to one of the following values from here:
  http://php.net/manual/en/timezones.php
 
@@ -281,15 +291,18 @@ Edit your _.bashrc_ file and add the PHP 7 bin directories to your path
     ln -s composer.phar composer
 
 ## Step 11: Installing & Configuring XDebug
+
 Do this for local development, and for testing servers
 
 _DO *NOT* install XDebug on a production server!_
 
 ### Download and un-tar the XDebug Module
+
     wget https://xdebug.org/files/xdebug-2.7.1.tgz -O xdebug-2.7.1.tgz
     tar -xzf xdebug-2.7.1.tgz
 
 ### Compile the XDebug Module
+
 The variable number_of_cores_or_processors_CPU_has should be at least 3. Most
 modern computers have quad core processors. This significantly speeds up the
 time taken to compile the PHP binary and its shared libraries
@@ -315,6 +328,7 @@ move the shared object to the PHP extension directory manually
 
 
 ## Step 12: Add xdebug setting to the PHP.ini file
+
 You need to tell PHP where to find the `xdebug` library. Append this snippet
 to the end of the php.ini file located at __$HOME/bin/php7/lib/php.ini__
 
@@ -329,11 +343,13 @@ to the end of the php.ini file located at __$HOME/bin/php7/lib/php.ini__
 
 
 ## Step 13: Using PHP with Nginx (production mode)
+
 You'll have to start *php-fpm* manually to get it working with Nginx
 
     sudo $HOME/bin/php7/sbin/php-fpm
 
 ### Running PHP-FPM at Boot Time
+
 To run the PHP-FPM process whenever the server reboots run the following command
 
     sudo crontab -eu root
@@ -343,6 +359,7 @@ Then add the following line to the crontab
     @reboot /home/me/bin/php-fpm
 
 ### Configure Nginx to Use PHP-FPM
+
 You need to modify Nginx's configuration to start using PHP-FPM
 
     cd /etc/nginx/sites-available
@@ -370,55 +387,60 @@ FastCGI section
     }
 
 ### Example Nginx PHP-FPM configuration File
+
 So, your conf file should look like this:
 
     server {
         listen 80 default_server;
         listen [::]:80 default_server;
-        
+
         # path to code (index.php should be in this directory)
         root /path/to/PHPCODE;
-        
+
         index index.php;
-        
+
         server_name phpdevbox;
-        
+
         location / {
           try_files $uri $uri/ /index.php?query_string;
         }
-        
+
         location ~ \.php$ {
             include snippets/fastcgi-php.conf;
-        
+
             # use this if you want to use TCP:
             # fastcgi_pass 127.0.0.1:9000;
-            
+
             # use this if you want to use sockets
             # fastcgi_pass unix:/var/run/php-fpm.sock;
         }
-        
+
         location ~ /\.ht {
           # deny access to .htaccess files
           deny all;
-	      }
+        }
     }
 
 Nginx should now be serving your files
 
 ## STEP 13: Running PHP's Built in Server (development mode)
+
 There are multiple ways to use PHP for development.
 
 ### Laravel 5.5
+
 If you're using Laravel 5.5 this is how you start the built in PHP server
 
     php artisan serve --host=your.ip.of.vm --port=8000
 
 ### PHP CLI SERVER
+
 If you want to use the built in PHP web-server
 
     php -S ip.of.your.machine:port_number
 
 ### Nginx
+
 While, you can use Nginx for testing, it's not the best alternative. One of the
 issue you will find is that Nginx times out.
 
@@ -427,6 +449,7 @@ __Using PHP with Nginx (production mode)__ on how to setup Nginx to serve PHP
 files from your VM
 
 #### Nginx Virtualbox Bug
+
 You'll need to edit `/etc/nginx/nginx.conf` and change the line 
 `sendfile on;` to `sendfile off;`
 
@@ -435,6 +458,7 @@ be updated. Turning off _sendfile_ will cause Nginx to serve the file via a
 different method and the new file's changes will be displayed immediately.
 
 ## Step 14: Development on remote server
+
 This step is if you want to develop (write code) on a Windows (or Mac),
 but run the code on a VM.
 
@@ -445,6 +469,7 @@ Every step in the above instructions has been tailored specifically for
 Ubuntu Server.
 
 ### Step 1: mount guest additions
+
 *As of Ubuntu 18.10 steps 1-3 can be skipped*
 Insert the guest additions CD image, then run the __Guest Additions__ install
 script
@@ -461,16 +486,18 @@ script
     sudo adduser www-data vboxsf
 
 ### STEP 4: Add Shared Directory
+
 Power off the virtual machine, add a shared directory, then reboot your VM
 
 The shared directory will be located at `/media/sf_SHARED_DIRECTORY_NAME`\
 
 ### Step 5: Connect your IDE to the remote server
+
 Using VSCode, you need to create a new Debug configuration file
 
- * Install PHP Intellesense and PHP Xdebug extensions
- * Click the bug icon on the left hand side
- * Click the cog and select PHP
+* Install PHP Intellesense and PHP Xdebug extensions
+* Click the bug icon on the left hand side
+* Click the cog and select PHP
 
 Paste the following snippet into the `launch.json` file
 
@@ -495,6 +522,7 @@ server, and its value is where the code lives on your local development box
 
 
 ## Step 15: Using XDebug, Local Development
+
 The following is how to setup xdebug if you are running your code locally,
 and developing your code locally. 
 
@@ -513,9 +541,10 @@ This is what your debug JSON file (_lauch.json_) will look like
     }
 
 To start VSCode's debugger
- * select the bug icon on the left-hand side
- * select _Listen for XDebug_ from the dropdown menu
- * click the green play button to the left of the dropdown menu
- * any breakpoints in the code, the debugger will pause execution
+
+* select the bug icon on the left-hand side
+* select _Listen for XDebug_ from the dropdown menu
+* click the green play button to the left of the dropdown menu
+* any breakpoints in the code, the debugger will pause execution
    allowing you to step through the code
 
