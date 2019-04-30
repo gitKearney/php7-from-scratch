@@ -1,5 +1,5 @@
 # PHP7-from-scratch
-## Instructions on how to compile PHP 7.2.13 from source on Ubuntu 18.10 machines. 
+## Instructions on how to compile PHP 7.3.4 from source on Ubuntu 18.10 machines. 
 This will also include instructions on how to configure the machine for Nginx.
 
 These instructions are ideal for those who want to run PHP in production. 
@@ -29,6 +29,7 @@ Now, paste the following into your terminal
     # add local bin directory
     if [ -d "$HOME/bin" ] ; then
       PATH="$HOME/bin:$PATH"
+      PATH="php7/bin:$HOME/bin/php7/sbin:$PATH"
     fi
 
     # press ctrl-c to exit cat
@@ -66,8 +67,8 @@ location for the headers. This symlink fixes that.
 
     sudo ln -s /usr/include/x86_64-linux-gnu/curl /usr/include/curl
 
-## Step 4: Download Latest PHP 7.2.x
-As of the time of this, PHP 7.2.13 was the latest PHP available.
+## Step 4: Download Latest PHP 7.3.x
+As of the time of this, PHP 7.3.4 was the latest PHP available.
 
 __NOTE: this installs PHP in the user's local bin directory, not
 globally!__
@@ -75,11 +76,11 @@ globally!__
     # create the Download directory
     mkdir -p ~/Downloads/
 
-    # change to the Downloads directory and fetch the PHP 7.2 tarball
+    # change to the Downloads directory and fetch the PHP 7.3 tarball
     cd ~/Downloads;
-    wget http://us3.php.net/get/php-7.2.13.tar.xz/from/this/mirror -O php-7.2.13.tar.xz
-    tar -xf php-7.2.13.tar.xz
-    cd php-7.2.2
+    wget https://www.php.net/distributions/php-7.3.4.tar.bz2 -O php-7.3.4.tar.bz2
+    tar -xf php-7.3.4.tar.bz2
+    cd php-7.3.4
 
 
 ## Step 5: Build a build script
@@ -115,7 +116,7 @@ this snippet into it
         --enable-sysvshm \
         --with-zlib \
         --with-curl \
-        --with-pear \
+        --without-pear \
         --with-openssl \
         --enable-pcntl \
         --with-password-argon2 \
@@ -192,7 +193,7 @@ greatly
     make install
 
 ## Step 7: Edit the PHP.ini file
-Copy the *php-7.2.13/php.ini-development* file from the source directory to
+Copy the *php-7.3.4/php.ini-development* file from the source directory to
 the *~/bin/php7/lib/* directory, and rename the file to *php.ini*
 
     cp php.ini-development ~/bin/php7/lib/php.ini
@@ -266,21 +267,11 @@ also, uncomment out the `listen.ower`, `listen.group`, & `listen.mode` variables
 
 
 ## Step 9: ADD PHP TO YOUR PATH
-Create symbolic links to the PHP binaries in your user's `bin` directory
+Edit your _.bashrc_ file and add the PHP 7 bin directories to your path
 
-After you make these symbolic links, you need to open a new terminal session
-to get these changes. All commands going forward are to be done in a new
-terminal window
-
-    cd ~/bin
-    ln -s php7/bin/php
-    ln -s php7/bin/php-config
-    ln -s php7/bin/phpize
-    ln -s php7/bin/phar.phar phar
-    ln -s php7/sbin/php-fpm
-
-    # if you installed pear
-    # ln -s php7/bin/pear
+    if [ -d "$HOME/bin/php7" ] ; then
+      PATH="$HOME/bin/php7/bin:$HOME/bin/php7/sbin:$PATH"
+    fi
 
 ## Step 10: Download Composer
 
@@ -295,33 +286,32 @@ Do this for local development, and for testing servers
 _DO *NOT* install XDebug on a production server!_
 
 ### Download and un-tar the XDebug Module
-    wget https://xdebug.org/files/xdebug-2.7.0alpha1.tgz -O xdebug-2.7.0.tgz
-    tar -xzf xdebug-2.7.0.tgz
+    wget https://xdebug.org/files/xdebug-2.7.1.tgz -O xdebug-2.7.1.tgz
+    tar -xzf xdebug-2.7.1.tgz
 
 ### Compile the XDebug Module
 The variable number_of_cores_or_processors_CPU_has should be at least 3. Most
 modern computers have quad core processors. This significantly speeds up the
 time taken to compile the PHP binary and its shared libraries
 
-    cd xdebug-2.7.0alpha1/
+    cd xdebug-2.7.1/
     phpize
     ./configure --enable-xdebug 
     make -j number_of_cores_or_processors_CPU_has
     make install
 
 
-The _XDebug_ installation script **should** install Xdebug in the correct location which is
+The _XDebug_ installation script **should** install _xdebug.so_ in the correct location which is
 _$HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20170718_
 
 Test if the file exists
 
-    ls -l $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so
+    ls -l $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so
 
 If you get an error stating **no such file or directory**, then, you need to 
 move the shared object to the PHP extension directory manually
 
-    cp modules/xdebug.so $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so
-
+    cp modules/xdebug.so $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so
 
 
 ## Step 12: Add xdebug setting to the PHP.ini file
@@ -329,7 +319,7 @@ You need to tell PHP where to find the `xdebug` library. Append this snippet
 to the end of the php.ini file located at __$HOME/bin/php7/lib/php.ini__
 
     [xdebug]
-    zend_extension=/home/{USER NAME}/bin/php7/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so
+    zend_extension=/home/{USER NAME}/bin/php7/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so
     xdebug.remote_enable=1
     xdebug.remote_autostart=1
     xdebug.remote_connect_back=1
