@@ -153,6 +153,7 @@ this snippet into it
 
 
 ### IF YOU NEED TO WORK WITH ZIP FILES
+
 Install the ZIP libraries if you need to work with .zip file
 
 Earlier we installed the package `zlib1g-dev`, this allows us to work with 
@@ -213,15 +214,14 @@ the *~/bin/php7/lib/* directory, and rename the file to *php.ini*
 ### Change your timezone
 
 You'll need to set your timezone to one of the following values from here:
- http://php.net/manual/en/timezones.php
+[http://php.net/manual/en/timezones.php](http://php.net/manual/en/timezones.php)
 
 For example, if you are in the US Central timezone, your timezone will be
- `America/Chicago` 
+ `America/Chicago`
 
 If you are in the US Pacific Timezone, your timezone will be `America/Los_Angeles`
 
 If you are in Zurich, Switzerland, your timezone will be `Europe/Zurich`
-
 
     [Date]
     ; Defines the default timezone used by the date functions
@@ -240,6 +240,7 @@ The PHP-FPM fix
     cgi.fix_pathinfo=0:
 
 ## Step 8: PHP-FPM Config Files
+
 You need to create a *php-fpm.conf* file to use Nginx.
 
     cd ~/bin/php7/etc/; mv php-fpm.conf.default php-fpm.conf
@@ -254,8 +255,8 @@ JUST DOUBLE CHECK TO MAKE SURE IT'S SET**
     group = www-data
     ...
 
-
 ### IF YOU WANT TO USE SOCKETS INSTEAD OF TCP PORT 9000
+
 Sockets are faster then using TCP ports, but are limited in the number of 
 connections they support.
 
@@ -277,6 +278,7 @@ also, uncomment out the `listen.ower`, `listen.group`, & `listen.mode` variables
 
 
 ## Step 9: ADD PHP TO YOUR PATH
+
 Edit your _.bashrc_ file and add the PHP 7 bin directories to your path
 
     if [ -d "$HOME/bin/php7" ] ; then
