@@ -34,9 +34,12 @@ MySQL, Postgres, composer, and Nginx.
 
     sudo apt-get install autoconf build-essential curl libtool \
       libssl-dev libcurl4-openssl-dev libxml2-dev libreadline7 \
-      libreadline-dev libzip-dev libzip4 nginx openssl \
+      libreadline-dev libzip-dev libzip4 openssl \
       pkg-config zlib1g-dev libargon2-0-dev argon2 \
       libsodium-dev
+
+## Install nGinx
+    nginx
 
 ## Install MySQL
 If you do not plan on installing MySQL, then skip this step
@@ -188,6 +191,15 @@ You'll have to start *php-fpm* manually to get it working with NginX
 
     sudo ~/bin/php7/sbin/php-fpm
 
+### Run PHP-FPM at Boot Time
+To run the PHP-FPM process whenever the server reboots run the following command
+
+    sudo crontab -eu root
+
+Then add the following line to the crontab
+
+    @reboot /home/me/bin/php-fpm
+
 ## WEBSERVERS
 
 __Laravel 5.5__
@@ -265,16 +277,13 @@ If you are developing on a virtual machine, like VirtualBox or Parallels and wan
 Again, this will be for an Ubuntu server. We will mount a directory on your harddrive and sync it to a directory on the virtual machine.
 
 # VIRTUALBOX
-### Step 1: mount guest additions
-Insert the guest additions CD image, then run this on the Linux VM
+### Step 1: install guest additions
+Install the virtualbox guest additions so you can have shared directories between
+your host machine and the ubuntu VM
 
-    sudo mount /dev/cdrom /media/cdrom
+    sudo apt-get install virtualbox-guest-utils
 
-### Step 2: install guest additions:
-
-    sudo /media/cdrom/VBoxLinuxAdditions.run
-
-### Step 3: Add your user to the vboxsf
+### Step 2: Add your user to the vboxsf
 
     sudo adduser PUT_YOUR_USERNAME_HERE vboxsf
     sudo adduser www-data vboxsf
