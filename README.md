@@ -277,13 +277,25 @@ If you are developing on a virtual machine, like VirtualBox or Parallels and wan
 Again, this will be for an Ubuntu server. We will mount a directory on your harddrive and sync it to a directory on the virtual machine.
 
 # VIRTUALBOX
-### Step 1: install guest additions
+
+## Step 1a: Install Guest Additions Through _apt_ (perferred)
 Install the virtualbox guest additions so you can have shared directories between
 your host machine and the ubuntu VM
 
     sudo apt-get install virtualbox-guest-utils
 
-### Step 2: Add your user to the vboxsf
+## Step 1b: Install Guest Additions From Guest Addititions CD
+Use this way if you want all guest additions from virtualbox installed.
+
+ ### 1) Insert Guest Additions CD from menu
+ ### 2) Create the mount point for the Guest Additions CD Image
+
+    sudo mkdir /media/cdrom
+    sudo mount /dev/cdrom /media/cdrom
+    cd /media/cdrom
+    sudo sh VBoxLinuxAdditions.run
+
+## Step 2: Add your user to the vboxsf
 
     sudo adduser PUT_YOUR_USERNAME_HERE vboxsf
     sudo adduser www-data vboxsf
