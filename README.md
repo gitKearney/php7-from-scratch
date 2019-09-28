@@ -499,12 +499,7 @@ Every step in the above instructions has been tailored specifically for
 Ubuntu Server.
 
 # VIRTUALBOX
-
-### Step 1: mount guest additions
-
-*As of Ubuntu 18.10 steps 1-3 can be skipped*
-Insert the guest additions CD image, then run the __Guest Additions__ install
-script
+There are now 2 seperate ways to install the VirtualBox Guest additions
 
 ## Step 1a: Install Guest Additions Through _apt_ (perferred)
 Install the virtualbox guest additions so you can have shared directories between
