@@ -4,10 +4,10 @@
 
 This will also include instructions on how to configure the machine for Nginx.
 
-These instructions are ideal for those who want to run PHP in production. 
-This version of PHP lacks intrusive packages like Suhosin. 
+These instructions are ideal for those who want to run PHP in production.
+This version of PHP lacks intrusive packages like Suhosin.
 
-And added benefit, is you don't have install any packages like 
+And added benefit, is you don't have install any packages like
 `php-json`, `php-mysql`, `php-common`, nor `php-cli`
 
 Instead, you have 1 PHP binary, and a PHP FPM binary.
@@ -21,7 +21,7 @@ home directory.
 
 ## Step 2: Add the bin directory to your Path
 
-This will allow you to use type `php` anywhere and the version of PHP we're 
+This will allow you to use type `php` anywhere and the version of PHP we're
 compiling will be first on the list - and the first one to be run
 
 Open the file `~/.bashrc` and add the following to the end of it
@@ -42,29 +42,23 @@ Now, paste the following into your terminal
 Install the following packages. These are needed for PHP to communicate with
 MySQL, Postgres, composer, and Nginx.
 
-<<<<<<< HEAD
-
     sudo apt-get install autoconf build-essential curl libtool \
-      libssl-dev libcurl4-openssl-dev libxml2-dev libreadline7 \
-      libreadline-dev libzip-dev libzip4 openssl \
+      libssl-dev libcurl4-openssl-dev libxml2-dev \
+      libzip-dev libzip4 openssl \
       pkg-config zlib1g-dev libargon2-0-dev argon2 \
       libsodium-dev
 
 ## Install nGinx
-    nginx
+If you want to use nginx instead of laravel's `artisan serve` or PHP's local web
+server
 
-## Install MySQL
-If you do not plan on installing MySQL, then skip this step
-=======
-    sudo apt-get install autoconf build-essential libtool \
-      libssl-dev libcurl4-openssl-dev nginx openssl \
-      pkg-config zlib1g-dev libargon2-0-dev argon2 \
-      libsodium-dev
+    sudo apt-get install nginx
+
+
 
 ### Install MySQL
 
 If you do not plan on installing MySQL, then _skip this step_
->>>>>>> 79e993bf1b369269858c6f543c884285c7a67ecb
 
     sudo apt-get install mysql-server mysql-client
 
@@ -82,8 +76,8 @@ If you don't plan on installing PostgreSQL then _skip this step_
 
 __IF__ you installed the package `pkg-config` _skip this step_
 
-Debian based distros don't report the correct location of 
-openSSL headers. Without the `pkg-config` package PHP looks in the wrong 
+Debian based distros don't report the correct location of
+openSSL headers. Without the `pkg-config` package PHP looks in the wrong
 location for the headers. This symlink fixes that.
 
     sudo ln -s /usr/include/x86_64-linux-gnu/curl /usr/include/curl
@@ -150,7 +144,7 @@ this snippet into it
         --disable-xmlwriter \
         --disable-dom
 
-    # to add additional compile options to PHP, add " \" after the last 
+    # to add additional compile options to PHP, add " \" after the last
     # element. You *must* put a space and then a backslash so the configure
     # script knows that the there is more to the build script
 
@@ -171,7 +165,7 @@ this snippet into it
 
 Install the ZIP libraries if you need to work with .zip file
 
-Earlier we installed the package `zlib1g-dev`, this allows us to work with 
+Earlier we installed the package `zlib1g-dev`, this allows us to work with
 compressed files, like tar.gz and .tgz, but not .zip files.
 
     sudo apt-get install libzip-dev libzip4
@@ -183,7 +177,7 @@ And, add this to the build PHP build script below
 
 ### TO USE PsySH - A PHP repl useful for debugging Laravel apps
 
-    sudo apt-get install libreadline7 libreadline-dev
+    sudo apt-get install libreadline-dev
 
 And, add the following to the PHP build script below
 
@@ -204,7 +198,7 @@ And, add the following to the PHP build script below
 
 ## Step 6: Compile PHP
 
-The next three commands create a Makefile so the `make` command knows how to 
+The next three commands create a Makefile so the `make` command knows how to
 build PHP, where to install the binaries at, what options PHP should be built
 with
 
@@ -213,7 +207,7 @@ you are building on a small box, or a VM, however, this increases the time
 greatly
 
     sh build_php.sh
-    make -j number_of_cores_or_processors_CPU_has 
+    make -j number_of_cores_or_processors_CPU_has
     make install
 
 ## Step 7: Edit the PHP.ini file
@@ -272,7 +266,7 @@ JUST DOUBLE CHECK TO MAKE SURE IT'S SET**
 
 ### IF YOU WANT TO USE SOCKETS INSTEAD OF TCP PORT 9000
 
-Sockets are faster then using TCP ports, but are limited in the number of 
+Sockets are faster then using TCP ports, but are limited in the number of
 connections they support.
 
 If you want to use sockets, though, you'll need to make the following changes
@@ -311,7 +305,6 @@ Edit your _.bashrc_ file and add the PHP 7 bin directories to your path
 
 Do this for local development, and for testing servers
 
-<<<<<<< HEAD
 ### Run PHP-FPM at Boot Time
 To run the PHP-FPM process whenever the server reboots run the following command
 
@@ -321,12 +314,11 @@ Then add the following line to the crontab
 
     @reboot /home/me/bin/php-fpm
 
-## WEBSERVERS
-=======
-_DO *NOT* install XDebug on a production server!_
->>>>>>> 79e993bf1b369269858c6f543c884285c7a67ecb
+# XDEBUG
 
 ### Download and un-tar the XDebug Module
+_DO *NOT* install XDebug on a production server!_
+
 
     wget https://xdebug.org/files/xdebug-2.7.1.tgz -O xdebug-2.7.1.tgz
     tar -xzf xdebug-2.7.1.tgz
@@ -339,7 +331,7 @@ time taken to compile the PHP binary and its shared libraries
 
     cd xdebug-2.7.1/
     phpize
-    ./configure --enable-xdebug 
+    ./configure --enable-xdebug
     make -j number_of_cores_or_processors_CPU_has
     make install
 
@@ -351,7 +343,7 @@ Test if the file exists
 
     ls -l $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so
 
-If you get an error stating **no such file or directory**, then, you need to 
+If you get an error stating **no such file or directory**, then, you need to
 move the shared object to the PHP extension directory manually
 
     cp modules/xdebug.so $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so
@@ -474,17 +466,17 @@ If you want to use the built in PHP web-server
 While, you can use Nginx for testing, it's not the best alternative. One of the
 issue you will find is that Nginx times out.
 
-Follow the instructions found in the section 
+Follow the instructions found in the section
 __Using PHP with Nginx (production mode)__ on how to setup Nginx to serve PHP
 files from your VM
 
 #### Nginx Virtualbox Bug
 
-You'll need to edit `/etc/nginx/nginx.conf` and change the line 
+You'll need to edit `/etc/nginx/nginx.conf` and change the line
 `sendfile on;` to `sendfile off;`
 
-What will happen is changes to static files (CSS and Javascript) files won't 
-be updated. Turning off _sendfile_ will cause Nginx to serve the file via a 
+What will happen is changes to static files (CSS and Javascript) files won't
+be updated. Turning off _sendfile_ will cause Nginx to serve the file via a
 different method and the new file's changes will be displayed immediately.
 
 ## Step 14: Development on remote server
@@ -562,7 +554,7 @@ server, and its value is where the code lives on your local development box
 ## Step 15: Using XDebug, Local Development
 
 The following is how to setup xdebug if you are running your code locally,
-and developing your code locally. 
+and developing your code locally.
 
 This is what your debug JSON file (_lauch.json_) will look like
 
