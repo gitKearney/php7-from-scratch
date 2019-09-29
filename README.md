@@ -31,8 +31,8 @@ Open the file `~/.bashrc` and add the following to the end of it
 Now, paste the following into your terminal
 
     # add local bin directory
-    if [ -d "$HOME/bin" ] ; then
-      PATH="$HOME/bin:$PATH"
+    if [ -d "$HOME/bin/php7/bin" ] ; then
+      PATH="$HOME/bin/php7/bin:$PATH"
     fi
 
     # press ctrl-c to exit cat
@@ -42,19 +42,15 @@ Now, paste the following into your terminal
 Install the following packages. These are needed for PHP to communicate with
 MySQL, Postgres, composer, and Nginx.
 
-    sudo apt-get install autoconf build-essential curl libtool \
-      libssl-dev libcurl4-openssl-dev \
-      libzip-dev openssl \
-      pkg-config zlib1g-dev libargon2-dev argon2 \
-      libsodium-dev
+    sudo apt-get install autoconf build-essential \
+      libssl-dev pkg-config zlib1g-dev libargon2-dev \
+      libsodium-dev libcurl4-openssl-dev
 
 ## Install nGinx
 If you want to use nginx instead of laravel's `artisan serve` or PHP's local web
 server
 
     sudo apt-get install nginx
-
-
 
 ### Install MySQL
 
@@ -491,21 +487,16 @@ Every step in the above instructions has been tailored specifically for
 Ubuntu Server.
 
 # VIRTUALBOX
-There are now 2 seperate ways to install the VirtualBox Guest additions
+Install the VirtualBox Guest additions to use shared directories between Mac and Ubuntu. At this time I couldn't
+get `virtualbox-guest-utils-hwe` and `virtualbox-guest-utils` to work with shared directories
 
-## Step 1a: Install Guest Additions Through _apt_ (perferred)
-Install the virtualbox guest additions so you can have shared directories between
-your host machine and the ubuntu VM
-
-    sudo apt-get install virtualbox-guest-utils
-
-## Step 1b: Install Guest Additions From Guest Addititions CD
+## Step 1: Install Guest Additions From Guest Addititions CD
 Use this way if you want all guest additions from virtualbox installed.
 
  ### 1) Insert Guest Additions CD from menu
  ### 2) Create the mount point for the Guest Additions CD Image
 
-    sudo mkdir /media/cdrom
+    sudo mkdir -p /media/cdrom
     sudo mount /dev/cdrom /media/cdrom
     cd /media/cdrom
     sudo sh VBoxLinuxAdditions.run
@@ -516,6 +507,8 @@ Use this way if you want all guest additions from virtualbox installed.
     sudo adduser www-data vboxsf
 
 ### STEP 4: Add Shared Directory
+Be sure to choose the *auto-mount option*. Secondly, there's a bug in VM 
+where external hard drives cannot be used to store shared folders
 
 Power off the virtual machine, add a shared directory, then reboot your VM
 
