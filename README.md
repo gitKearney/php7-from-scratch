@@ -1,6 +1,6 @@
 # PHP7-from-scratch
 
-## Instructions on how to compile PHP 7.3.4 from source on Ubuntu 18.10 machines
+## Instructions on how to compile PHP 7.3.4 from source on Ubuntu 19.04 machines
 
 This will also include instructions on how to configure the machine for Nginx.
 
@@ -43,9 +43,9 @@ Install the following packages. These are needed for PHP to communicate with
 MySQL, Postgres, composer, and Nginx.
 
     sudo apt-get install autoconf build-essential curl libtool \
-      libssl-dev libcurl4-openssl-dev libxml2-dev \
-      libzip-dev libzip4 openssl \
-      pkg-config zlib1g-dev libargon2-0-dev argon2 \
+      libssl-dev libcurl4-openssl-dev \
+      libzip-dev openssl \
+      pkg-config zlib1g-dev libargon2-dev argon2 \
       libsodium-dev
 
 ## Install nGinx
@@ -168,7 +168,7 @@ Install the ZIP libraries if you need to work with .zip file
 Earlier we installed the package `zlib1g-dev`, this allows us to work with
 compressed files, like tar.gz and .tgz, but not .zip files.
 
-    sudo apt-get install libzip-dev libzip4
+    sudo apt-get install libzip-dev libzip5
 
 And, add this to the build PHP build script below
 
