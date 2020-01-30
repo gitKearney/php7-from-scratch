@@ -333,7 +333,7 @@ time taken to compile the PHP binary and its shared libraries
 
 
 The _XDebug_ installation script **should** install _xdebug.so_ in the correct location which is
-_$HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20170718_
+_$HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20180731_
 
 Test if the file exists
 
