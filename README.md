@@ -1,6 +1,6 @@
 # PHP7-from-scratch
 
-## Instructions on how to compile PHP 7.3.4 from source on Ubuntu 19.04 machines
+## Instructions on how to compile PHP 7.4.6 from source on Ubuntu 20.04 machines
 
 This will also include instructions on how to configure the machine for Nginx.
 
@@ -44,7 +44,8 @@ MySQL, Postgres, composer, and Nginx.
 
     sudo apt-get install autoconf build-essential \
       libssl-dev pkg-config zlib1g-dev libargon2-dev \
-      libsodium-dev libcurl4-openssl-dev
+      libsodium-dev libcurl4-openssl-dev sqlite3 libsqlite3-dev \
+      libonig-dev
 
 ## Install nGinx
 If you want to use nginx instead of laravel's `artisan serve` or PHP's local web
@@ -78,9 +79,9 @@ location for the headers. This symlink fixes that.
 
     sudo ln -s /usr/include/x86_64-linux-gnu/curl /usr/include/curl
 
-## Step 4: Download Latest PHP 7.3.x
+## Step 4: Download Latest PHP 7.4.x
 
-As of the time of this, PHP 7.3.4 was the latest PHP available.
+As of the time of this, PHP 7.4.6 was the latest PHP available.
 
 __NOTE: this installs PHP in the user's local bin directory, not
 globally!__
@@ -90,9 +91,9 @@ globally!__
 
     # change to the Downloads directory and fetch the PHP 7.3 tarball
     cd ~/Downloads;
-    wget https://www.php.net/distributions/php-7.3.4.tar.bz2 -O php-7.3.4.tar.bz2
-    tar -xf php-7.3.4.tar.bz2
-    cd php-7.3.4
+    wget https://www.php.net/distributions/php-7.4.6.tar.bz2 -O php-7.4.6.tar.bz2
+    tar -xf php-7.4.6.tar.bz2
+    cd php-7.4.6
 
 
 ## Step 5: Build a build script
@@ -168,8 +169,8 @@ compressed files, like tar.gz and .tgz, but not .zip files.
 
 And, add this to the build PHP build script below
 
-    --enable-zip \
-    --with-libzip=/usr/lib/x86_64-linux-gnu
+    --with-zip \
+
 
 ### TO USE PsySH - A PHP repl useful for debugging Laravel apps
 
@@ -316,8 +317,8 @@ Then add the following line to the crontab
 _DO *NOT* install XDebug on a production server!_
 
 
-    wget https://xdebug.org/files/xdebug-2.7.1.tgz -O xdebug-2.7.1.tgz
-    tar -xzf xdebug-2.7.1.tgz
+    wget https://xdebug.org/files/xdebug-2.9.6.tgz -O xdebug-2.9.6.tgz
+    tar -xzf xdebug-2.9.6.tgz
 
 ### Compile the XDebug Module
 
@@ -325,7 +326,7 @@ The variable number_of_cores_or_processors_CPU_has should be at least 3. Most
 modern computers have quad core processors. This significantly speeds up the
 time taken to compile the PHP binary and its shared libraries
 
-    cd xdebug-2.7.1/
+    cd xdebug-2.9.6/
     phpize
     ./configure --enable-xdebug
     make -j number_of_cores_or_processors_CPU_has
@@ -333,16 +334,16 @@ time taken to compile the PHP binary and its shared libraries
 
 
 The _XDebug_ installation script **should** install _xdebug.so_ in the correct location which is
-_$HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20180731_
+_$HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20190902/_
 
 Test if the file exists
 
-    ls -l $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so
+    ls -l $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20190902/xdebug.so
 
 If you get an error stating **no such file or directory**, then, you need to
 move the shared object to the PHP extension directory manually
 
-    cp modules/xdebug.so $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so
+    cp modules/xdebug.so $HOME/bin/php7/lib/php/extensions/no-debug-non-zts-20190902/xdebug.so
 
 
 ## Step 12: Add xdebug setting to the PHP.ini file
@@ -351,7 +352,7 @@ You need to tell PHP where to find the `xdebug` library. Append this snippet
 to the end of the php.ini file located at __$HOME/bin/php7/lib/php.ini__
 
     [xdebug]
-    zend_extension=/home/{USER NAME}/bin/php7/lib/php/extensions/no-debug-non-zts-20180731/xdebug.so
+    zend_extension=/home/{USER NAME}/bin/php7/lib/php/extensions/no-debug-non-zts-20190902/xdebug.so
     xdebug.remote_enable=1
     xdebug.remote_autostart=1
     xdebug.remote_connect_back=1
@@ -507,7 +508,7 @@ Use this way if you want all guest additions from virtualbox installed.
     sudo adduser www-data vboxsf
 
 ### STEP 4: Add Shared Directory
-Be sure to choose the *auto-mount option*. Secondly, there's a bug in VM 
+Be sure to choose the *auto-mount option*. Secondly, there's a bug in VM
 where external hard drives cannot be used to store shared folders
 
 Power off the virtual machine, add a shared directory, then reboot your VM
