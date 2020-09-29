@@ -150,7 +150,6 @@ this snippet into it
 ### IF YOU INSTALL MYSQL, ADD THIS TO THE FOLLOWING LINES FROM THIS SCRIPT
 
     --enable-mysqlnd \
-    --with-pdo-mysql \
     --with-pdo-mysql=mysqlnd
 
 ### IF YOU INSTALL POSTGRES, ADD THIS THE FOLLOWING LINES FROM THIS SCRIPT
