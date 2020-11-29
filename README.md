@@ -57,7 +57,7 @@ server
 
 If you do not plan on installing MySQL, then _skip this step_
 
-    sudo apt-get install mysql-server mysql-client
+    sudo apt-get install mariadb-server
 
 ### install Postgres
 
@@ -139,7 +139,8 @@ this snippet into it
         --disable-xml \
         --disable-xmlreader \
         --disable-xmlwriter \
-        --disable-dom
+        --disable-dom \
+        --without-libxml 
 
     # to add additional compile options to PHP, add " \" after the last
     # element. You *must* put a space and then a backslash so the configure
@@ -150,7 +151,6 @@ this snippet into it
 ### IF YOU INSTALL MYSQL, ADD THIS TO THE FOLLOWING LINES FROM THIS SCRIPT
 
     --enable-mysqlnd \
-    --with-pdo-mysql \
     --with-pdo-mysql=mysqlnd
 
 ### IF YOU INSTALL POSTGRES, ADD THIS THE FOLLOWING LINES FROM THIS SCRIPT
