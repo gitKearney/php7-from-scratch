@@ -148,7 +148,7 @@ this snippet into it
 
 
 
-### IF YOU INSTALL MYSQL, ADD THIS TO THE FOLLOWING LINES FROM THIS SCRIPT
+### IF YOU INSTALL MARIADB, ADD THIS TO THE FOLLOWING LINES FROM THIS SCRIPT
 
     --enable-mysqlnd \
     --with-pdo-mysql=mysqlnd
@@ -476,99 +476,87 @@ What will happen is changes to static files (CSS and Javascript) files won't
 be updated. Turning off _sendfile_ will cause Nginx to serve the file via a
 different method and the new file's changes will be displayed immediately.
 
-## Step 14: Development on remote server
+# Development On Remote Server
 
-This step is if you want to develop (write code) on a Windows (or Mac),
+These step are if you want to develop [write code] on Windows or Mac,
 but run the code on a VM.
 
-What you need to to do is install Ubuntu Server. Ubuntu Server lacks a window
-manager so, it's very fast and only needs about 256 MB RAM
+I prefer Ubuntu Server because it lacks a window manager and only needs about 256 MB RAM
 
-Every step in the above instructions has been tailored specifically for
-Ubuntu Server.
+Every step in the below instructions has been tailored specifically for
+Ubuntu Server on Virtualbox.
 
-# VIRTUALBOX
-Install the VirtualBox Guest additions to use shared directories between Mac and Ubuntu. At this time I couldn't
-get `virtualbox-guest-utils-hwe` and `virtualbox-guest-utils` to work with shared directories
+## VIRTUALBOX
+After installing Ubuntu Server (20.04) in a virtual machine, install the following packages
 
-## Step 1: Install Guest Additions From Guest Addititions CD
-Use this way if you want all guest additions from virtualbox installed.
+    nfs-kernel-server
 
- ### 1) Insert Guest Additions CD from menu
- ### 2) Create the mount point for the Guest Additions CD Image
+NFS (Network File System) is targeted at *NIX based systems. Originally developed by Sun
+MicroSystems in the 1980s, NFS allows the file system of one *NIX computer to be
+accessed by another *NIX system.
 
-    sudo mkdir -p /media/cdrom
-    sudo mount /dev/cdrom /media/cdrom
-    cd /media/cdrom
-    sudo sh VBoxLinuxAdditions.run
+## Create an NFS Mount
+First create a directory to be shared. It's best to use a directory with no assigned
+user by default
 
-## Step 2: Add your user to the vboxsf
+   mkdir -p /mnt/shared_dir
 
-    sudo adduser PUT_YOUR_USERNAME_HERE vboxsf
-    sudo adduser www-data vboxsf
+Each folder to be shared via NFS must have an entry in the file _/etc/exports_
 
-### STEP 4: Add Shared Directory
-Be sure to choose the *auto-mount option*. Secondly, there's a bug in VM
-where external hard drives cannot be used to store shared folders
+    # NOTE: NO SPACE AFTER THE IP ADDRESS!
+    /mtn/shared_dir client_ip(permissions)
 
-Power off the virtual machine, add a shared directory, then reboot your VM
+ * The first arguement is pretty simple: the directory to share.
+ * The second argument is the client's IP or IP range: e.g. _192.168.1.1/24_. 
+   That IP address means anyone from 192.168.1.1 - 192.168.1.255. If you want 
+   anyone to be able to connect, change the IP Address to *
+ * The third arguement is the permissions
 
-The shared directory will be located at `/media/sf_SHARED_DIRECTORY_NAME`\
+## NFS Permissions
+Here's the list of permissions that work on Mac/Ubuntu to an Ubuntu server
 
-### Step 5: Connect your IDE to the remote server
+ * rw
+ * sync
+ * no_subtree_check
+ * insecure
+ * all_squash - _tells NFS that for any user connecting,ignore their actual 
+   user & group ID and treat them as if user ID = anonuid and group ID = anonguid_
+ * anonuid=1000
+ * anonguid=1000
 
-Using VSCode, you need to create a new Debug configuration file
+**IF** _anonuid_ and _anonguid_ are 0,then that user **IS GIVEN ROOT PERMISSION**
 
-* Install PHP Intellesense and PHP Xdebug extensions
-* Click the bug icon on the left hand side
-* Click the cog and select PHP
+The _anonuid_ and _anonuid_ of 1000 is the user and group of the user on my
+Ubuntu Server
 
-Paste the following snippet into the `launch.json` file
+## Restart the NFS Deamon
+Now that we have a shared dir, allow others to connect to it
 
-    {
-        "version": "0.2.0",
-        "configurations": [
-            {
-                "name": "Listen for XDebug",
-                "type": "php",
-                "request": "launch",
-                "port": 9000,
-                "pathMappings": {
-                    "/home/phpuser/cifs_share": "${workspaceRoot}"
-                }
-            }
-        ]
-    }
+    sudo exportfs -a
+    sudo systemctl restart nfs-kernel-server
 
-The _pathMappings_ object contains a key where the code lives on the remote
-server, and its value is where the code lives on your local development box
+## Connect to the NFS share
+Using MacOS Catalina (10.15) this is one way to connect
 
+    cd # change to the home directory
+    mkdir -p nfs_mount # create a new directory called "nfs_mount"
+    sudo mount 192.168.1.184:/mnt/shared_dir /Users/{my mac user}/nfs_mount
 
-
-## Step 15: Using XDebug, Local Development
-
-The following is how to setup xdebug if you are running your code locally,
-and developing your code locally.
-
-This is what your debug JSON file (_lauch.json_) will look like
+## Connect IDE to Remote Server
+If you are using VSCode this _launch.json_ will allow you to write code locally
+and debug remotely
 
     {
-        "version": "0.2.0",
-        "configurations": [
-            {
-                "name": "Listen for XDebug",
-                "type": "php",
-                "request": "launch",
-                "port": 9000
+      "version": "0.2.0",
+      "configurations": [
+        {
+            "name": "Listen for XDebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9000,
+            "pathMappings": {
+                "/home/phpuser/cifs_share": "${workspaceRoot}"
             }
-        ]
+        }
+      ]
     }
-
-To start VSCode's debugger
-
-* select the bug icon on the left-hand side
-* select _Listen for XDebug_ from the dropdown menu
-* click the green play button to the left of the dropdown menu
-* any breakpoints in the code, the debugger will pause execution
-   allowing you to step through the code
-
