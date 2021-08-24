@@ -534,6 +534,7 @@ Now that we have a shared dir, allow others to connect to it
 
     sudo exportfs -a
     sudo systemctl restart nfs-kernel-server
+    systemctl start rpc-statd
 
 ## Connect to the NFS share
 Using MacOS Catalina (10.15) this is one way to connect
