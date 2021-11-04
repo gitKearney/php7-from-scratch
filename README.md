@@ -276,7 +276,7 @@ to
 
     listen = /var/run/php-fpm.sock
 
-also, uncomment out the `listen.ower`, `listen.group`, & `listen.mode` variables
+also, uncomment out the `listen.owner`, `listen.group`, & `listen.mode` variables
 
     listen.owner = www-data
     listen.group = www-data
